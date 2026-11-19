@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+*.pyc
+workdir/
+camera-jpegs/
+*.3FR
+*.3fr
+*.tif
+*.tiff
+.env
