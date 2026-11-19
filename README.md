@@ -86,7 +86,7 @@ Limits, as they are:
 - Phocus renders neutral grays slightly warm. A camera profile cannot carry that without disturbing white balance, so HNCS keeps neutrals neutral. If you like the Phocus warmth, warm the white balance a little.
 - Phocus also corrects distortion and vignetting of the lens. This profile does not; the measurements were made with Camera Raw's lens corrections off.
 - The Phocus **HDR** rendering is not covered.
-- Warm sunset skies come out a little less saturated and lighter near the sun than in the camera's own JPEG/HEIC: the camera compresses its highlights differently for each scene, which a fixed profile cannot do. Lower Highlights and add a little Vibrance if you want them closer.
+- Warm sunset skies come out a little less saturated and lighter near the sun than in Phocus or the camera's own HEIC. Phocus keeps those yellows; Camera Raw's own highlight processing loses some of them, with every profile (Adobe Standard and Adobe Color lose more), and by a different amount in each photo, so a fixed profile cannot make up for it. Lower Highlights and add a little Vibrance if you want them closer.
 - Smooth gradients of vivid orange may still show slight banding in places: the color table is still uneven at medium saturation. Not seen yet on a real photo.
 - Three lenses were tested. Others (XCD 90V, 25V, 20…) are untested, and Phocus lifts brightness differently depending on the lens.
 - The measurements were made on one body and by sampling uniform patches. Skin tones and fine texture were not measured separately.

@@ -20,7 +20,7 @@ SHA-256: `04415637dc38e732518e17fe46f0d6fb9d93b69773c51d619a45094988d9f3d5`
 
 ## Known limitations
 
-- Warm sunset skies are a little less saturated and lighter near the sun than in the camera's own JPEG/HEIC (the camera compresses highlights per scene). Lower Highlights, add a little Vibrance.
+- Warm sunset skies are a little less saturated and lighter near the sun than in Phocus or the camera's HEIC: Camera Raw's own highlight processing loses some of these yellows with every profile, by a different amount in each photo. Lower Highlights, add a little Vibrance.
 - Weaker at ISO 3200 and above and in bright highlights; three lenses tested; Phocus lens corrections and HDR not covered.
 
 ## License
