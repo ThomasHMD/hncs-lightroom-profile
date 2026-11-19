@@ -16,6 +16,14 @@ Un profil caméra Adobe (`.dcp`) gratuit pour Lightroom Classic et Camera Raw qu
 
 28 Ko, pour le X2D II 100C. Toutes les versions sont dans les [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). La source du profil et des outils qui l'ont fabriqué, c'est ce dépôt, sous licence MIT (voir [Licence](#licence)).
 
+## Nouveautés de la 1.1 (correction des bandes dans les ciels)
+
+La version 1.0 pouvait montrer de légères bandes roses et vertes dans les dégradés lisses et pâles, typiquement un ciel de coucher de soleil qui passe du bleu au jaune près de l'horizon (merci à l'utilisateur de X2D qui l'a signalé avec un fichier de test). La cause était la table de couleurs 3D du profil : pour les couleurs presque grises, sa correction changeait brutalement d'une teinte à la voisine. Un ciel pâle qui passe du bleu au jaune traverse le gris : il balaie toutes les teintes en quelques pixels, et chacune recevait une correction un peu différente.
+
+La 1.1 lisse cette partie de la table et réduit de moitié la correction des couleurs presque grises. Le reste (courbe de tons, matrices, couleurs saturées) ne change pas. Sur la photo signalée, les bandes ont disparu et le ciel est à peu près aussi lisse qu'avec Adobe Standard. La fidélité à Phocus ne s'est pas dégradée : sur 16 des 41 photos de test, rendues à nouveau dans Camera Raw, le ΔE2000 médian vaut 1,03 pour la 1.1 et 1,05 pour la 1.0 avec l'exposition réglée photo par photo, et 1,21 contre 1,30 tel quel. Un contrôle permanent fait maintenant passer des dégradés synthétiques par le gris, dans `tools/adoucir_look.py --self-test`.
+
+Si vous avez installé la 1.0, remplacez le fichier par le nouveau (même nom, même endroit) et relancez Lightroom. Le profil garde son nom, **HNCS** : les photos qui l'utilisent déjà passent d'elles-mêmes à la 1.1.
+
 ## Installer
 
 Le profil va dans le dossier **utilisateur** de Camera Raw. Pas dans le dossier de l'application, pas dans le dossier système.
@@ -62,12 +70,15 @@ Les écarts sont mesurés contre un export Phocus (réglages par défaut, SDR) d
 | ISO 3200 et plus (4 photos), tel quel | **3,67** / 5,47 | 4,48 / 6,29 |
 | Zones claires (24 photos), tel quel | **2,35** / 6,37 | 2,88 / 6,80 |
 
+Le tableau ci-dessus et les figures ont été faits avec la version 1.0 ; la 1.1 ne diffère que dans les couleurs pâles, presque grises (voir [Nouveautés de la 1.1](#nouveautés-de-la-11-correction-des-bandes-dans-les-ciels)).
+
 Les limites, telles qu'elles sont :
 
 - Les **hauts ISO** (3200 et plus) et les **hautes lumières** sont les points faibles : l'écart avec Phocus y reste grand. Seules 4 photos à ISO 3200 et plus ont été gardées de côté, ce chiffre n'est donc pas solide.
 - Phocus rend les gris neutres légèrement chauds. Un profil caméra ne peut pas porter cela sans perturber la balance des blancs : HNCS garde donc les neutres neutres. Si vous aimez la chaleur de Phocus, réchauffez un peu la balance des blancs.
 - Phocus corrige aussi la distorsion et le vignetage de l'objectif. Ce profil ne le fait pas ; les mesures ont été faites avec les corrections d'objectif de Camera Raw désactivées.
 - Le rendu **HDR** de Phocus n'est pas couvert.
+- Les dégradés lisses d'orange vif (de l'ombre vers un orange lumineux, par exemple des lampes ou un coucher de soleil saturé) peuvent encore montrer de légères bandes : la table de couleurs y reste irrégulière. Je ne l'ai vu que dans mon modèle, pas encore sur une vraie photo.
 - Trois objectifs ont été testés. Les autres (XCD 90V, 25V, 20…) ne le sont pas, et Phocus éclaircit différemment selon l'objectif.
 - Les mesures ont été faites sur un seul boîtier et par échantillonnage de zones uniformes. Les tons chair et les textures fines n'ont pas été mesurés à part.
 - Elles ont été faites avec Camera Raw piloté depuis Photoshop, c'est-à-dire le moteur que Lightroom utilise, pas avec Lightroom Classic lui-même.

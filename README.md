@@ -16,6 +16,14 @@ A free Adobe camera profile (`.dcp`) for Lightroom Classic and Camera Raw that r
 
 28 KB, for the X2D II 100C. All versions are in the [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). The source of the profile and of the tools that made it is this repository, under the MIT license (see [License](#license)).
 
+## What's new in 1.1 (fix for banding in skies)
+
+Version 1.0 could show faint pink and green bands in smooth, pale gradients, typically a sunset sky that fades from blue to yellow near the horizon (thanks to the X2D user who reported it with a test file). The cause was the profile's 3D color table: for nearly gray colors, its correction changed abruptly from one hue to the next. A pale sky going from blue to yellow passes through gray, so it sweeps through every hue within a few pixels, and each hue got a slightly different correction.
+
+Version 1.1 smooths that part of the table and halves the correction of nearly gray colors. Everything else (tone curve, matrices, saturated colors) is unchanged. On the reported photo, the bands are gone and the sky is about as smooth as with Adobe Standard. Accuracy against Phocus did not get worse: on 16 of the 41 test photos, re-rendered in Camera Raw, the median ΔE2000 is 1.03 for 1.1 and 1.05 for 1.0 with exposure tuned per photo, and 1.21 and 1.30 as is. A permanent check now runs synthetic gradients through gray in `tools/adoucir_look.py --self-test`.
+
+If you installed 1.0, replace the file with the new one (same name, same place) and restart Lightroom. The profile keeps its name, **HNCS**, so photos already set to it switch to 1.1 by themselves.
+
 ## Install
 
 The profile goes in the **user** folder of Camera Raw. Not in the application folder, not in the system folder.
@@ -62,12 +70,15 @@ Differences are measured against a Phocus export (default settings, SDR) of the 
 | ISO 3200 and above (4 photos), as is | **3.67** / 5.47 | 4.48 / 6.29 |
 | Bright areas (24 photos), as is | **2.35** / 6.37 | 2.88 / 6.80 |
 
+The table above and the figures were made with version 1.0; 1.1 only differs in pale, nearly gray colors (see [What's new in 1.1](#whats-new-in-11-fix-for-banding-in-skies)).
+
 Limits, as they are:
 
 - **High ISO** (3200 and above) and **bright highlights** are the weak spots: the gap to Phocus stays large there. Only 4 photos at ISO 3200 and above were kept aside, so that number is not solid.
 - Phocus renders neutral grays slightly warm. A camera profile cannot carry that without disturbing white balance, so HNCS keeps neutrals neutral. If you like the Phocus warmth, warm the white balance a little.
 - Phocus also corrects distortion and vignetting of the lens. This profile does not; the measurements were made with Camera Raw's lens corrections off.
 - The Phocus **HDR** rendering is not covered.
+- Smooth gradients of vivid orange (from shadow to bright orange, for example lamps or a saturated sunset) may still show slight banding: the color table is still uneven there. I have seen it in my model only, not yet on a real photo.
 - Three lenses were tested. Others (XCD 90V, 25V, 20…) are untested, and Phocus lifts brightness differently depending on the lens.
 - The measurements were made on one body and by sampling uniform patches. Skin tones and fine texture were not measured separately.
 - They were made with Camera Raw driven from Photoshop, which is the engine Lightroom uses, not with Lightroom Classic itself.

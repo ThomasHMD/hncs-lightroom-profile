@@ -1,28 +1,27 @@
-First public release of **HNCS**, a free Lightroom Classic / Camera Raw camera profile that reproduces the Hasselblad HNCS color of the X2D II 100C.
+**HNCS 1.1** fixes faint banding in smooth, pale gradients, such as a sunset sky fading from blue to yellow near the horizon.
 
-## Installation
+## What changed
 
-1. Download `HNCS-Hasselblad-X2D-II.dcp` below (~28 KB).
-2. Quit Lightroom Classic and copy the file into the **user** Camera Raw folder: `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/` (macOS) or `%APPDATA%\Adobe\CameraRaw\CameraProfiles\` (Windows).
-3. Start Lightroom Classic and pick **HNCS** in the Profile browser. The README explains how to make it the default for the X2D II.
+- For nearly gray colors, the 3D color table of 1.0 changed abruptly from one hue to the next. A pale sky passing from blue to yellow goes through gray, so it swept through every hue in a few pixels and showed pink and green bands.
+- 1.1 smooths that part of the table and halves the correction of nearly gray colors. Tone curve, matrices and saturated colors are unchanged.
+- On the reported photo, the bands are gone, about as smooth as Adobe Standard.
+- Accuracy against Phocus, on 16 of the 41 test photos re-rendered in Camera Raw, median ΔE2000: 1.03 for 1.1 and 1.05 for 1.0 with exposure tuned per photo; 1.21 and 1.30 as is.
+- New: `tools/adoucir_look.py`, with a permanent banding check in its `--self-test`.
 
-SHA-256: `6baec0c806b5e368a24243d8a7ba0a33d92194bfcac7d5c20f6c6ab7d40c9e82`
+Thanks to the X2D user who reported it with a test file.
 
-## What works
+## Update from 1.0
 
-- Median ΔE2000 against Phocus of 1.56 as is (Adobe Standard: 2.51), on 41 photos kept out of the fitting, in real Camera Raw renders.
-- Neutral grays stay neutral; the camera's automatic brightness (BaselineExposure) is applied by Lightroom as usual.
+1. Download `HNCS-Hasselblad-X2D-II.dcp` below.
+2. Quit Lightroom Classic and replace the old file in the **user** Camera Raw folder: `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/` (macOS) or `%APPDATA%\Adobe\CameraRaw\CameraProfiles\` (Windows).
+3. Restart Lightroom. The profile is still called **HNCS**: photos already set to it switch to 1.1 by themselves.
 
-## Requirements
+SHA-256: `ce6dc413962751856fd09e3076063d6a2941020f40a7fb1dfc08b5cf825fe03c`
 
-- Lightroom Classic or Camera Raw, Mac or Windows.
-- An X2D II 100C (camera name `Hasselblad 100-22-Coated6`).
+## Known limitations
 
-## Known limitations (v1.0.0)
-
-- Weaker at ISO 3200 and above and in bright highlights.
-- Three lenses tested (XCD 35-100E, 38V, 55V); Phocus lens corrections not reproduced; Phocus HDR not covered.
-- Phocus's slightly warm neutrals are not carried by the profile.
+- Smooth gradients of vivid orange may still show slight banding (seen in the model only, not yet on a real photo).
+- Weaker at ISO 3200 and above and in bright highlights; three lenses tested; Phocus lens corrections and HDR not covered.
 
 ## License
 
