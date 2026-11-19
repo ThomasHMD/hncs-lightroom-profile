@@ -1,26 +1,26 @@
-**HNCS 1.1** fixes faint banding in smooth, pale gradients, such as a sunset sky fading from blue to yellow near the horizon.
+**HNCS 1.2** removes a darker ring that could appear around the sun in backlit sunsets. It keeps the banding fix of 1.1.
+
+![HNCS 1.0, 1.1 and 1.2 on a simulated sunset](https://raw.githubusercontent.com/ThomasHMD/hncs-lightroom-profile/main/docs/figures/versions.png)
 
 ## What changed
 
-- For nearly gray colors, the 3D color table of 1.0 changed abruptly from one hue to the next. A pale sky passing from blue to yellow goes through gray, so it swept through every hue in a few pixels and showed pink and green bands.
-- 1.1 smooths that part of the table and halves the correction of nearly gray colors. Tone curve, matrices and saturated colors are unchanged.
-- On the reported photo, the bands are gone, about as smooth as Adobe Standard.
-- Accuracy against Phocus, on 16 of the 41 test photos re-rendered in Camera Raw, median ΔE2000: 1.03 for 1.1 and 1.05 for 1.0 with exposure tuned per photo; 1.21 and 1.30 as is.
-- New: `tools/adoucir_look.py`, with a permanent banding check in its `--self-test`.
+- **1.2**: at the very top of the 3D color table, very bright yellow-orange tones had their brightness halved, so the sky got darker near the sun before jumping to white. Brightness now always rises with the light. Accuracy against Phocus is unchanged.
+- **1.1** (kept): no more pink and green bands in pale skies that fade from blue to yellow.
+- The self-test of `tools/adoucir_look.py` now refuses a profile that breaks gradients through gray or whose brightness goes down anywhere.
 
-Thanks to the X2D user who reported it with a test file.
+Thanks to the X2D user who sent sunset test files.
 
-## Update from 1.0
+## Update
 
 1. Download `HNCS-Hasselblad-X2D-II.dcp` below.
 2. Quit Lightroom Classic and replace the old file in the **user** Camera Raw folder: `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/` (macOS) or `%APPDATA%\Adobe\CameraRaw\CameraProfiles\` (Windows).
-3. Restart Lightroom. The profile is still called **HNCS**: photos already set to it switch to 1.1 by themselves.
+3. Restart Lightroom. The profile is still called **HNCS**: photos already set to it switch to 1.2 by themselves.
 
-SHA-256: `ce6dc413962751856fd09e3076063d6a2941020f40a7fb1dfc08b5cf825fe03c`
+SHA-256: `04415637dc38e732518e17fe46f0d6fb9d93b69773c51d619a45094988d9f3d5`
 
 ## Known limitations
 
-- Smooth gradients of vivid orange may still show slight banding (seen in the model only, not yet on a real photo).
+- Warm sunset skies are a little less saturated and lighter near the sun than in the camera's own JPEG/HEIC (the camera compresses highlights per scene). Lower Highlights, add a little Vibrance.
 - Weaker at ISO 3200 and above and in bright highlights; three lenses tested; Phocus lens corrections and HDR not covered.
 
 ## License

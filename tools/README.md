@@ -51,6 +51,6 @@ python3 tools/adoucir_look.py --self-test   # banding check of release/HNCS-Hass
 | `valider_acr.py`, `acr_v2.py` | real Camera Raw renders through Photoshop (sidecar XMP with the profile forced and everything at zero), then measurements |
 | `passe2.py` | conductor of the second batch: rounds of correction, held-out measurement, lens-by-lens study, the final report |
 | `via_dcamprof.py` | the alternative route with dcamprof, kept for comparison |
-| `adoucir_look.py` | version 1.1: smooths the look table near gray to remove banding (`ecrire <1.0 profile> <output>` rebuilds 1.1 with its default settings). `--self-test` measures the break energy of gradients through gray and fails if the released profile goes above the limit |
+| `adoucir_look.py` | versions 1.1 and 1.2: smooths the look table near gray to remove banding, and makes output brightness rise with input brightness in the brightest tones (rings around the sun). `ecrire <1.0 profile> <output>` rebuilds 1.2 with its default settings, `--sans-hl` gives 1.1. `--self-test` fails if the released profile breaks gradients through gray or lets brightness go down |
 
 `--self-test` exists on every script. All run from this repository and `data/` except `valider_acr.py` (Photoshop, 3FR and installed profiles needed); `chaine_adobe.py` and `via_dcamprof.py` skip their dcamprof check when it is not installed.

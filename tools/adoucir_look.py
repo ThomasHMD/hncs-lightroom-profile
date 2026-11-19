@@ -10,9 +10,10 @@ saturation ramenés au neutre, le banding retombe au niveau d'Adobe Standard ; l
 
 Correctif : lissage circulaire en teinte, d'autant plus fort que la saturation est faible, et rapprochement du
 neutre des nœuds de faible saturation (à moitié en s1, au quart en s2 : ramener tout au neutre effaçait le
-réchauffement des gris chauds que fait HNCS). Les tables restent celles de l'ajustement ailleurs.
+réchauffement des gris chauds que fait HNCS). HNCS 1.2 ajoute `hautes_lumieres` (anneaux autour des soleils,
+voir sa docstring). Les tables restent celles de l'ajustement ailleurs.
 
-  adoucir_look.py ecrire <HNCS 1.0.dcp> <sortie.dcp> --nom "HNCS" [--sigma 2.0] [--neutre 0.5]   # défauts = HNCS 1.1
+  adoucir_look.py ecrire <HNCS 1.0.dcp> <sortie.dcp> --nom "HNCS" [--sigma 2.0] [--neutre 0.5] [--sans-hl]   # défauts = HNCS 1.2
   adoucir_look.py essai-synthetique <profil.dcp> ...     # énergie de cassure sur des dégradés qui traversent le neutre
   adoucir_look.py balayage <profil.dcp>                   # réglages contre fidélité (modèle) ; il faut le dossier de travail (3FR de la passe 1)
   adoucir_look.py --self-test
@@ -60,6 +61,32 @@ def adoucir(look, sigma=2.0, neutre=0.5, moyenne=0.0):
     return out
 
 
+def hautes_lumieres(look):
+    """HNCS 1.2 : le dernier plan de valeur (v = 1, les pixels les plus clairs) reprend le plan précédent, puis la
+    valeur de sortie (v x facteur de valeur) est rendue croissante le long de v pour chaque (teinte, saturation).
+
+    Cause (19/11/2026, soleils couchants) : au plan v = 1, l'ajustement avait mis un facteur de valeur de 0,47 et
+    de saturation de 1,6 pour les jaunes-orangés à s = 0,43 (sans doute des cases sans données : les blocs presque
+    blancs sont rares et souvent écrêtés). En s'approchant du soleil, le ciel s'assombrissait avant de repasser au
+    blanc : un anneau autour du soleil, absent d'Adobe Standard et du HEIC du boîtier.
+    """
+    V = look.shape[0]
+    out = look.copy()
+    out[V - 1] = out[V - 2]
+    vn = np.arange(V) / (V - 1)
+    for k in range(1, V):
+        plancher = out[k - 1, ..., 2] * vn[k - 1] / vn[k]     # même valeur de sortie qu'au plan précédent
+        out[k, ..., 2] = np.maximum(out[k, ..., 2], plancher)
+    return out
+
+
+def valeur_monotone(look):
+    """Nombre de pas où la valeur de sortie redescend quand la valeur d'entrée monte (0 attendu)."""
+    V = look.shape[0]
+    sortie = look[..., 2] * (np.arange(V) / (V - 1))[:, None, None]
+    return int((np.diff(sortie, axis=0) < -1e-6).sum())
+
+
 def degrades_synthetiques(n=600):
     """Dégradés ProPhoto linéaires entre couleurs opposées, qui passent tout près du neutre (ciels, peau/ombre…)."""
     paires = [((0.20, 0.28, 0.45), (0.55, 0.47, 0.32)),   # ciel bleu -> horizon jaune
@@ -102,11 +129,12 @@ def lire_look(chemin):
     return p, np.array(p["ProfileLookTableData"], float).reshape(V, H, S, 3)
 
 
-def ecrire(entree, sortie, nom, sigma, neutre):
+def ecrire(entree, sortie, nom, sigma, neutre, hl=True):
     p, look = lire_look(entree)
     q = copy.deepcopy(p)
     q["ProfileName"] = nom
-    q["ProfileLookTableData"] = adoucir(look, sigma, neutre).reshape(-1).tolist()
+    t = adoucir(look, sigma, neutre)
+    q["ProfileLookTableData"] = (hautes_lumieres(t) if hl else t).reshape(-1).tolist()
     dcp_ecrire.ecrire(str(sortie), q)
     return q
 
@@ -143,13 +171,17 @@ def self_test():
     assert np.allclose(adoucir(nerveuse)[:, :, 0], NEUTRE), "nœud s = 0 neutre"
     # garde-fou permanent : le profil livré ne doit pas casser les dégradés qui traversent le neutre
     racine = pathlib.Path(__file__).resolve().parents[1]
-    for livre in (racine / "profils" / "Hasselblad X2D II HNCS 1.1.dcp", racine / "release" / "HNCS-Hasselblad-X2D-II.dcp"):
+    t_hl = hautes_lumieres(nerveuse)
+    assert valeur_monotone(t_hl) == 0, "hautes_lumieres doit rendre la valeur de sortie croissante"
+    for livre in (racine / "profils" / "Hasselblad X2D II HNCS 1.2.dcp", racine / "release" / "HNCS-Hasselblad-X2D-II.dcp"):
         if not livre.exists():
             continue
         _, lk = lire_look(livre)
         el = energie_cassure(lk)
         assert el < 20, f"profil livré : cassure {el:.2f} >= 20 (banding probable ; HNCS 1.0 : 33,8)"
-        print(f"  profil livré HNCS 1.1 : cassure {el:.2f} (< 20)")
+        nm = valeur_monotone(lk)
+        assert nm == 0, f"profil livré : la luminosité redescend à {nm} endroits quand l'entrée monte (anneaux autour des soleils)"
+        print(f"  profil livré {livre.name} : cassure {el:.2f} (< 20), valeur de sortie croissante")
     print(f"self-test OK (adoucir_look) : cassure sans table {eid:.2f}, table bruitée {e0:.2f}, adoucie {e1:.2f}")
     return 0
 
@@ -161,12 +193,13 @@ def main():
     ap.add_argument("--nom", default="HNCS")
     ap.add_argument("--sigma", type=float, default=2.0)
     ap.add_argument("--neutre", type=float, default=0.5)
+    ap.add_argument("--sans-hl", action="store_true", help="sans la correction des hautes lumières (= HNCS 1.1)")
     ap.add_argument("--self-test", action="store_true")
     a = ap.parse_args()
     if a.self_test:
         return self_test()
     if a.action == "ecrire":
-        ecrire(a.fichiers[0], a.fichiers[1], a.nom, a.sigma, a.neutre)
+        ecrire(a.fichiers[0], a.fichiers[1], a.nom, a.sigma, a.neutre, hl=not a.sans_hl)
         print("écrit", a.fichiers[1])
     elif a.action == "balayage":
         p, look = lire_look(a.fichiers[0])
