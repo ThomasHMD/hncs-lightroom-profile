@@ -22,7 +22,7 @@ Un profil caméra Adobe (`.dcp`) gratuit pour Lightroom Classic et Camera Raw qu
 
 ### 1.2 : plus d'anneau autour du soleil
 
-Dans les couchers de soleil à contre-jour, la version 1.1 pouvait dessiner un anneau orange plus sombre autour du soleil. La cause était le haut de la table de couleurs 3D : pour les tons jaune-orangé très clairs, elle divisait la luminosité par deux, si bien que le ciel s'assombrissait en approchant du soleil, puis passait d'un coup au blanc. Dans la 1.2, la luminosité monte toujours avec la lumière, partout dans la table. Rien d'autre ne change : la fidélité à Phocus est identique, et la correction des bandes de la 1.1 est gardée. Le contrôle automatique refuse désormais aussi un profil dont la luminosité redescend quelque part.
+Dans les couchers de soleil à contre-jour, la version 1.1 pouvait dessiner un anneau orange plus sombre autour du soleil. La cause était le haut de la table de couleurs 3D : pour les tons jaune-orangé très clairs, elle divisait la luminosité par deux, si bien que le ciel s'assombrissait en approchant du soleil, puis passait d'un coup au blanc. Dans la 1.2, la luminosité monte toujours avec la lumière, partout dans la table. Je l'ai vérifiée sur six couchers de soleil à contre-jour envoyés par un utilisateur de X2D. Rien d'autre ne change : sur les mêmes 16 photos de test que pour la 1.1, la fidélité à Phocus est identique (ΔE2000 médian 1,21 tel quel), et la correction des bandes de la 1.1 est gardée. Le contrôle automatique refuse désormais aussi un profil dont la luminosité redescend quelque part.
 
 ### 1.1 : correction des bandes dans les ciels
 
@@ -80,6 +80,12 @@ Les écarts sont mesurés contre un export Phocus (réglages par défaut, SDR) d
 
 Le tableau ci-dessus et les figures ont été faits avec la version 1.0 ; la 1.1 et la 1.2 ne diffèrent que dans les couleurs pâles, presque grises, et dans les tons chauds très clairs (voir [Nouveautés](#nouveautés)).
 
+Testé depuis :
+
+- **1.1 et 1.2** : rendues de nouveau sur 16 des 41 photos. ΔE2000 médian 1,21 tel quel et 1,03 avec l'exposition réglée par photo ; la 1.0 sur les mêmes 16 photos : 1,30 et 1,05.
+- **Tons de peau** : 3 photos avec des personnes (dont 2 tenues hors de l'ajustement), 1 617 zones sur des visages, des cous et des mains. Médiane 1,10 pour HNCS, 2,60 pour Adobe Standard (90e centile 2,81 et 4,71).
+- **Ciels chauds très clairs** : 33 photos de plus avec des couchers de soleil et des hautes lumières vives (dont 6 d'un utilisateur de X2D), exportées de Phocus, plus 16 des photos de test en contrôle. Je m'en suis servi pour essayer de réajuster la partie claire et saturée de la table de couleurs : les photos du réajustement se rapprochaient de Phocus, mais les autres s'en éloignaient (médiane 1,97 avant, 2,13 à 2,31 après). La 1.2 garde donc sa table : un profil fixe ne peut pas faire mieux à cet endroit.
+
 Les limites, telles qu'elles sont :
 
 - Les **hauts ISO** (3200 et plus) et les **hautes lumières** sont les points faibles : l'écart avec Phocus y reste grand. Seules 4 photos à ISO 3200 et plus ont été gardées de côté, ce chiffre n'est donc pas solide.
@@ -89,14 +95,14 @@ Les limites, telles qu'elles sont :
 - Les ciels chauds des couchers de soleil sortent un peu moins saturés et plus clairs près du soleil que dans Phocus ou le HEIC du boîtier. Phocus garde ces jaunes ; c'est le traitement des hautes lumières propre à Camera Raw qui en perd une partie, avec tous les profils (Adobe Standard et Adobe Color en perdent davantage), et pas autant d'une photo à l'autre : un profil fixe ne peut pas le compenser. Baissez les Hautes lumières et ajoutez un peu de Vibrance pour vous en rapprocher.
 - Les dégradés lisses d'orange vif peuvent encore montrer par endroits de légères bandes : la table de couleurs reste irrégulière aux saturations moyennes. Pas encore vu sur une vraie photo.
 - Trois objectifs ont été testés. Les autres (XCD 90V, 25V, 20…) ne le sont pas, et Phocus éclaircit différemment selon l'objectif.
-- Les mesures ont été faites sur un seul boîtier et par échantillonnage de zones uniformes. Les tons chair et les textures fines n'ont pas été mesurés à part.
+- Les mesures ont été faites sur un seul boîtier et par échantillonnage de zones uniformes. Les textures fines n'ont pas été mesurées ; les tons de peau seulement sur les 3 photos ci-dessus.
 - Elles ont été faites avec Camera Raw piloté depuis Photoshop, c'est-à-dire le moteur que Lightroom utilise, pas avec Lightroom Classic lui-même.
 
 Les outils écrivent eux-mêmes ces rapports : on peut les régénérer avec ses propres fichiers (voir [`tools/README.md`](tools/README.md)).
 
 ## Comment il a été fait
 
-J'ai exporté des paires de fichiers : le 3FR, et la même photo depuis Phocus avec ses réglages HNCS par défaut. À partir d'environ 170 photos (trois objectifs, ISO 50 à 25600, lumière du jour et lumière chaude), j'ai ajusté le profil dans la chaîne de rendu d'Adobe elle-même (spécification DNG 1.7) : une courbe de tons, une petite correction de la matrice couleur et une table de couleurs 3D (teinte, saturation, valeur), neutres intacts. Puis je l'ai corrigé en deux tours d'après de **vrais rendus Camera Raw**, parce que mon modèle de la chaîne s'écartait de Camera Raw d'environ 1,6 ΔE, surtout dans les hautes lumières. Une photo sur quatre, choisie par objectif, n'a jamais servi à l'ajustement ; le tableau ci-dessus porte sur celles-là. (12 de ces 41 ont aussi servi à choisir entre les tours de correction, un petit biais ; l'écart entre les deux derniers tours était négligeable.)
+J'ai exporté des paires de fichiers : le 3FR, et la même photo depuis Phocus avec ses réglages HNCS par défaut. À partir de 170 photos (128 pour l'ajustement, 42 mises de côté, dont 41 rendables dans Camera Raw ; trois objectifs, ISO 50 à 25600, lumière du jour et lumière chaude), j'ai ajusté le profil dans la chaîne de rendu d'Adobe elle-même (spécification DNG 1.7) : une courbe de tons, une petite correction de la matrice couleur et une table de couleurs 3D (teinte, saturation, valeur), neutres intacts. Puis je l'ai corrigé en deux tours d'après de **vrais rendus Camera Raw**, parce que mon modèle de la chaîne s'écartait de Camera Raw d'environ 1,6 ΔE, surtout dans les hautes lumières. Une photo sur quatre, choisie par objectif, n'a jamais servi à l'ajustement ; le tableau ci-dessus porte sur celles-là. (12 de ces 41 ont aussi servi à choisir entre les tours de correction, un petit biais ; l'écart entre les deux derniers tours était négligeable.)
 
 Les outils sont dans [`tools/`](tools/) (Python, commentaires en français), avec un [README](tools/README.md) qui dit ce que fait chaque script et ce qu'il demande. Les mesures sur lesquelles le profil a été ajusté sont publiées dans [`data/`](data/README.md) (CC BY 4.0) : les scripts d'ajustement tournent donc depuis ce dépôt.
 

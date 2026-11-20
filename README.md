@@ -22,7 +22,7 @@ A free Adobe camera profile (`.dcp`) for Lightroom Classic and Camera Raw that r
 
 ### 1.2: no more ring around the sun
 
-In backlit sunsets, version 1.1 could draw a darker orange ring around the sun. The cause was the top of the 3D color table: for very bright yellow-orange tones, it halved the brightness, so the sky got darker as it got closer to the sun, then jumped to white. In 1.2, brightness always rises with the light, everywhere in the table. Nothing else changed: accuracy against Phocus is identical, and the bands fix of 1.1 is kept. The self-test now also refuses a profile whose brightness goes down anywhere.
+In backlit sunsets, version 1.1 could draw a darker orange ring around the sun. The cause was the top of the 3D color table: for very bright yellow-orange tones, it halved the brightness, so the sky got darker as it got closer to the sun, then jumped to white. In 1.2, brightness always rises with the light, everywhere in the table. I checked it on six backlit sunsets sent by an X2D user. Nothing else changed: on the same 16 test photos as for 1.1, accuracy against Phocus is identical (median ΔE2000 1.21 as is), and the bands fix of 1.1 is kept. The self-test now also refuses a profile whose brightness goes down anywhere.
 
 ### 1.1: fix for banding in skies
 
@@ -80,6 +80,12 @@ Differences are measured against a Phocus export (default settings, SDR) of the 
 
 The table above and the figures were made with version 1.0; 1.1 and 1.2 only differ in pale, nearly gray colors and in very bright warm tones (see [What's new](#whats-new)).
 
+Tested since then:
+
+- **1.1 and 1.2**: re-rendered on 16 of the 41 photos. Median ΔE2000 1.21 as is and 1.03 with exposure tuned per photo; 1.0 on the same 16 photos: 1.30 and 1.05.
+- **Skin tones**: 3 photos with people (2 of them kept out of the fitting), 1,617 patches on faces, necks and hands. Median 1.10 for HNCS, 2.60 for Adobe Standard (90th percentile 2.81 and 4.71).
+- **Bright warm skies**: 33 more photos with sunsets and bright highlights (6 of them from an X2D user), exported from Phocus, plus 16 of the test photos as a control. I used them to try a refit of the bright, saturated part of the color table: it brought the photos used for the refit closer to Phocus but moved the other photos further away (median 1.97 before, 2.13 to 2.31 after). So 1.2 keeps its table: a fixed profile cannot do better there.
+
 Limits, as they are:
 
 - **High ISO** (3200 and above) and **bright highlights** are the weak spots: the gap to Phocus stays large there. Only 4 photos at ISO 3200 and above were kept aside, so that number is not solid.
@@ -89,14 +95,14 @@ Limits, as they are:
 - Warm sunset skies come out a little less saturated and lighter near the sun than in Phocus or the camera's own HEIC. Phocus keeps those yellows; Camera Raw's own highlight processing loses some of them, with every profile (Adobe Standard and Adobe Color lose more), and by a different amount in each photo, so a fixed profile cannot make up for it. Lower Highlights and add a little Vibrance if you want them closer.
 - Smooth gradients of vivid orange may still show slight banding in places: the color table is still uneven at medium saturation. Not seen yet on a real photo.
 - Three lenses were tested. Others (XCD 90V, 25V, 20…) are untested, and Phocus lifts brightness differently depending on the lens.
-- The measurements were made on one body and by sampling uniform patches. Skin tones and fine texture were not measured separately.
+- The measurements were made on one body and by sampling uniform patches. Fine texture was not measured; skin tones only on the 3 photos above.
 - They were made with Camera Raw driven from Photoshop, which is the engine Lightroom uses, not with Lightroom Classic itself.
 
 The tools write these reports themselves, so they can be regenerated with your own files (see [`tools/README.md`](tools/README.md)).
 
 ## How it was made
 
-I exported pairs of files: the 3FR, and the same photo from Phocus at its default HNCS settings. From about 170 photos (three lenses, ISO 50 to 25600, daylight and warm light), I fitted the profile inside Adobe's own rendering chain (DNG specification 1.7): a tone curve, a small correction of the color matrix, and a 3D color table (hue, saturation, value), with neutrals left untouched. Then I corrected it in two rounds from **real Camera Raw renders**, because my model of the chain differed from Camera Raw by about 1.6 ΔE, mostly in highlights. One photo in four, chosen by lens, was never used for fitting; the table above is on those. (12 of these 41 were also used to choose between the correction rounds, a small bias; the difference between the two last rounds was negligible.)
+I exported pairs of files: the 3FR, and the same photo from Phocus at its default HNCS settings. From 170 photos (128 for fitting, 42 kept aside, of which 41 could be rendered in Camera Raw; three lenses, ISO 50 to 25600, daylight and warm light), I fitted the profile inside Adobe's own rendering chain (DNG specification 1.7): a tone curve, a small correction of the color matrix, and a 3D color table (hue, saturation, value), with neutrals left untouched. Then I corrected it in two rounds from **real Camera Raw renders**, because my model of the chain differed from Camera Raw by about 1.6 ΔE, mostly in highlights. One photo in four, chosen by lens, was never used for fitting; the table above is on those. (12 of these 41 were also used to choose between the correction rounds, a small bias; the difference between the two last rounds was negligible.)
 
 The tools are in [`tools/`](tools/) (Python, comments in French), with a [README](tools/README.md) that says what each script does and what it needs. The measurements the profile was fitted on are published in [`data/`](data/README.md) (CC BY 4.0), so the fitting scripts run from this repository.
 
