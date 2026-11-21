@@ -14,7 +14,7 @@ A free Adobe camera profile (`.dcp`) for Lightroom Classic and Camera Raw that r
 
 ### ➜ [**HNCS-Hasselblad-X2D-II.dcp** (latest release)](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Hasselblad-X2D-II.dcp)
 
-28 KB, for the X2D II 100C. All versions are in the [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). The source of the profile and of the tools that made it is this repository, under the MIT license (see [License](#license)).
+28 KB, for the X2D II 100C. **First-generation X2D 100C (2022)?** Use [**HNCS-Hasselblad-X2D-100C.dcp**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Hasselblad-X2D-100C.dcp) instead: same profile, keyed to the X2D's own camera name (see [Use it](#use-it)). All versions are in the [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). The source of the profile and of the tools that made it is this repository, under the MIT license (see [License](#license)).
 
 ## What's new
 
@@ -37,7 +37,7 @@ If you installed an earlier version, replace the file with the new one (same nam
 The profile goes in the **user** folder of Camera Raw. Not in the application folder, not in the system folder.
 
 1. Quit Lightroom Classic.
-2. Copy `HNCS-Hasselblad-X2D-II.dcp` into:
+2. Copy the `.dcp` for your camera (`HNCS-Hasselblad-X2D-II.dcp`, or `HNCS-Hasselblad-X2D-100C.dcp` for the first-generation X2D) into:
    - **macOS**: `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/`
      (in the Finder: Go ▸ Go to Folder…, then paste the path; the `Library` folder is hidden)
    - **Windows**: `%APPDATA%\Adobe\CameraRaw\CameraProfiles\`
@@ -52,7 +52,7 @@ Copying the file by hand, as above, is the method I tested.
 
 1. Open a 3FR from the X2D II in the Develop module.
 2. Basic panel ▸ **Profile** ▸ Browse (the four-square icon). The profile is called **HNCS** and sits in the **Profiles** group, below Camera Matching (not under Adobe Raw). The **Amount** slider at the top of the browser lets you dial it down. Click the star to make it a favorite, so it shows in the Profile drop-down.
-3. The profile only appears for X2D II files. It is keyed to Adobe's camera name `Hasselblad 100-22-Coated6`. Another 100-megapixel Hasselblad body may share that name, but I have only tested the X2D II 100C.
+3. The profile only appears for files of the camera it is keyed to. `HNCS-Hasselblad-X2D-II.dcp` is keyed to Adobe's camera name `Hasselblad 100-22-Coated6` (X2D II 100C): I tested it on that camera only. `HNCS-Hasselblad-X2D-100C.dcp` is the same profile keyed to `Hasselblad 100-20-Coated6` (first-generation X2D 100C, same sensor). It reuses the X2D II fit and was **not measured on X2D files**: one X2D user reports that it loads and works. If you own both cameras, both files can sit in the same folder: each only shows for its own camera.
 
 ### Make it the default for the X2D II
 
@@ -110,6 +110,7 @@ I built it with the help of Claude Code (Anthropic's coding assistant), which wr
 
 ## Credits and prior art
 
+- [u/ubiquitousuk](https://www.reddit.com/user/ubiquitousuk/) (Reddit, r/hasselblad) had the idea of the first-generation X2D variant: changing the profile's camera name to `100-20-Coated6`. They tried it on their own X2D files and sent me the working file; `tools/variante_x2d.py` rebuilds it from the X2D II profile.
 - [Konrad Michels, "What a Lightroom Camera Profile Can and Cannot Reproduce from Phocus"](https://blog.tonalphoto.com/lightroom-camera-profile-phocus-color/) (Tech Behind the Frame): same approach, fitting a Lightroom camera profile to Phocus renders of the X2D II. His profile is not distributed, which is why I made this one public.
 - [dcamprof](https://github.com/Entropy512/dcamprof) (GitHub mirror) by Anders Torger, used to cross-check my rendering model and as a first approach. It is GPL-3.0 and is not included: my scripts only call it as an external program. I kept my own fitting, which measured better in Camera Raw.
 - The profile structure follows Adobe's DNG specification. The colour matrices come from Adobe's own profile (see [License](#license)).

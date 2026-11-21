@@ -14,7 +14,7 @@ Un profil caméra Adobe (`.dcp`) gratuit pour Lightroom Classic et Camera Raw qu
 
 ### ➜ [**HNCS-Hasselblad-X2D-II.dcp** (dernière release)](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Hasselblad-X2D-II.dcp)
 
-28 Ko, pour le X2D II 100C. Toutes les versions sont dans les [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). La source du profil et des outils qui l'ont fabriqué, c'est ce dépôt, sous licence MIT (voir [Licence](#licence)).
+28 Ko, pour le X2D II 100C. **X2D 100C de première génération (2022) ?** Prenez plutôt [**HNCS-Hasselblad-X2D-100C.dcp**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Hasselblad-X2D-100C.dcp) : même profil, associé au nom d'appareil du X2D (voir [L'utiliser](#lutiliser)). Toutes les versions sont dans les [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). La source du profil et des outils qui l'ont fabriqué, c'est ce dépôt, sous licence MIT (voir [Licence](#licence)).
 
 ## Nouveautés
 
@@ -37,7 +37,7 @@ Si vous avez installé une version précédente, remplacez le fichier par le nou
 Le profil va dans le dossier **utilisateur** de Camera Raw. Pas dans le dossier de l'application, pas dans le dossier système.
 
 1. Quittez Lightroom Classic.
-2. Copiez `HNCS-Hasselblad-X2D-II.dcp` dans :
+2. Copiez le `.dcp` de votre boîtier (`HNCS-Hasselblad-X2D-II.dcp`, ou `HNCS-Hasselblad-X2D-100C.dcp` pour le X2D de première génération) dans :
    - **macOS** : `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/`
      (dans le Finder : Aller ▸ Aller au dossier…, puis collez le chemin ; le dossier `Library` est masqué)
    - **Windows** : `%APPDATA%\Adobe\CameraRaw\CameraProfiles\`
@@ -52,7 +52,7 @@ Copier le fichier à la main, comme ci-dessus, est la méthode que j'ai testée.
 
 1. Ouvrez un 3FR du X2D II dans le module Développement.
 2. Panneau Réglages de base ▸ **Profil** ▸ Parcourir (l'icône à quatre carrés). Le profil s'appelle **HNCS** et se trouve dans le groupe **Profils**, sous Camera Matching (pas dans Adobe Raw). Le curseur **Niveau** en haut de l'explorateur permet de l'atténuer. Cliquez sur l'étoile pour le mettre en favori : il apparaît alors dans la liste déroulante Profil.
-3. Le profil n'apparaît que pour les fichiers du X2D II. Il est associé au nom d'appareil d'Adobe, `Hasselblad 100-22-Coated6`. Un autre boîtier Hasselblad de 100 mégapixels peut porter le même nom, mais je n'ai testé que le X2D II 100C.
+3. Le profil n'apparaît que pour les fichiers du boîtier auquel il est associé. `HNCS-Hasselblad-X2D-II.dcp` l'est au nom d'appareil d'Adobe `Hasselblad 100-22-Coated6` (X2D II 100C) : je ne l'ai testé que sur ce boîtier. `HNCS-Hasselblad-X2D-100C.dcp` est le même profil associé à `Hasselblad 100-20-Coated6` (X2D 100C de première génération, même capteur). Il reprend l'ajustement du X2D II et **n'a pas été mesuré sur des fichiers de X2D** : un utilisateur de X2D signale qu'il se charge et fonctionne. Si vous avez les deux boîtiers, les deux fichiers peuvent cohabiter dans le dossier : chacun n'apparaît que pour son boîtier.
 
 ### En faire le défaut du X2D II
 
@@ -110,6 +110,7 @@ Je l'ai fait avec l'aide de Claude Code (l'assistant de programmation d'Anthropi
 
 ## Crédits et travaux antérieurs
 
+- [u/ubiquitousuk](https://www.reddit.com/user/ubiquitousuk/) (Reddit, r/hasselblad) a eu l'idée de la variante du X2D de première génération : changer le nom d'appareil du profil en `100-20-Coated6`. Il l'a essayée sur ses propres fichiers de X2D et m'a envoyé le fichier qui fonctionne ; `tools/variante_x2d.py` le reconstruit à partir du profil du X2D II.
 - [Konrad Michels, « What a Lightroom Camera Profile Can and Cannot Reproduce from Phocus »](https://blog.tonalphoto.com/lightroom-camera-profile-phocus-color/) (Tech Behind the Frame) : même approche, un profil caméra Lightroom ajusté sur des rendus Phocus du X2D II. Son profil n'est pas distribué, c'est pourquoi j'ai rendu public le mien.
 - [dcamprof](https://github.com/Entropy512/dcamprof) (miroir GitHub) d'Anders Torger, utilisé pour recouper mon modèle de rendu et comme première approche. Il est sous GPL-3.0 et n'est pas inclus : mes scripts ne font que l'appeler comme programme externe. J'ai gardé mon propre ajustement, qui mesurait mieux dans Camera Raw.
 - La structure du profil suit la spécification DNG d'Adobe. Les matrices couleur viennent du profil d'Adobe (voir [Licence](#licence)).

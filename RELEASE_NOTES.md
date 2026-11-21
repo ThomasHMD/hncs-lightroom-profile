@@ -1,28 +1,37 @@
-**HNCS 1.2** removes a darker ring that could appear around the sun in backlit sunsets. It keeps the banding fix of 1.1.
+*🇫🇷 Version française plus bas.*
 
-![HNCS 1.0, 1.1 and 1.2 on a simulated sunset](https://raw.githubusercontent.com/ThomasHMD/hncs-lightroom-profile/main/docs/figures/versions.png)
+**HNCS 1.2.1** adds a variant for the **first-generation Hasselblad X2D 100C** (2022). The profile itself is unchanged.
 
 ## What changed
 
-- **1.2**: at the very top of the 3D color table, very bright yellow-orange tones had their brightness halved, so the sky got darker near the sun before jumping to white. Brightness now always rises with the light. Accuracy against Phocus is unchanged.
-- **1.1** (kept): no more pink and green bands in pale skies that fade from blue to yellow.
-- The self-test of `tools/adoucir_look.py` now refuses a profile that breaks gradients through gray or whose brightness goes down anywhere.
+- New file `HNCS-Hasselblad-X2D-100C.dcp`: the same profile, keyed to Adobe's camera name `Hasselblad 100-20-Coated6` (the X2D) instead of `100-22-Coated6` (the X2D II). Same sensor, same color matrices: only the camera name differs. `tools/variante_x2d.py` rebuilds it from the X2D II profile.
+- **Not measured on X2D files.** It reuses the fit made on X2D II photos. One X2D user reports that it loads and works.
+- `HNCS-Hasselblad-X2D-II.dcp` is unchanged.
 
-Thanks to the X2D user who sent sunset test files.
+Thanks to [u/ubiquitousuk](https://www.reddit.com/user/ubiquitousuk/) (r/hasselblad), who had the idea and tried it on their X2D files.
 
-## Update
+## Install
 
-1. Download `HNCS-Hasselblad-X2D-II.dcp` below.
-2. Quit Lightroom Classic and replace the old file in the **user** Camera Raw folder: `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/` (macOS) or `%APPDATA%\Adobe\CameraRaw\CameraProfiles\` (Windows).
-3. Restart Lightroom. The profile is still called **HNCS**: photos already set to it switch to 1.2 by themselves.
+Copy the `.dcp` for your camera into the **user** Camera Raw folder: `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/` (macOS) or `%APPDATA%\Adobe\CameraRaw\CameraProfiles\` (Windows). Restart Lightroom Classic. If you own both cameras, both files can sit in the same folder.
 
-SHA-256: `04415637dc38e732518e17fe46f0d6fb9d93b69773c51d619a45094988d9f3d5`
+SHA-256:
+- `HNCS-Hasselblad-X2D-II.dcp`: `04415637dc38e732518e17fe46f0d6fb9d93b69773c51d619a45094988d9f3d5`
+- `HNCS-Hasselblad-X2D-100C.dcp`: `ce60386cca0be83cefc866718a0d5c0a1604e46415e475bb2b189d8150ba8dc1`
 
-## Known limitations
+---
 
-- Warm sunset skies are a little less saturated and lighter near the sun than in Phocus or the camera's HEIC: Camera Raw's own highlight processing loses some of these yellows with every profile, by a different amount in each photo. Lower Highlights, add a little Vibrance.
-- Weaker at ISO 3200 and above and in bright highlights; three lenses tested; Phocus lens corrections and HDR not covered.
+## 🇫🇷 En français
 
-## License
+**HNCS 1.2.1** ajoute une variante pour le **Hasselblad X2D 100C de première génération** (2022). Le profil lui-même ne change pas.
 
-MIT for the tools and the profile, except the two color matrices copied from Adobe's own profile, the data in `data/` (CC BY 4.0) and the photos in `docs/figures/`. See [`LICENSE`](https://github.com/ThomasHMD/hncs-lightroom-profile/blob/main/LICENSE) and [`THIRD_PARTY_LICENSES.md`](https://github.com/ThomasHMD/hncs-lightroom-profile/blob/main/THIRD_PARTY_LICENSES.md).
+## Ce qui change
+
+- Nouveau fichier `HNCS-Hasselblad-X2D-100C.dcp` : le même profil, associé au nom d'appareil d'Adobe `Hasselblad 100-20-Coated6` (le X2D) au lieu de `100-22-Coated6` (le X2D II). Même capteur, mêmes matrices de couleur : seul le nom d'appareil diffère. `tools/variante_x2d.py` le reconstruit à partir du profil du X2D II.
+- **Non mesuré sur des fichiers de X2D.** Il reprend l'ajustement fait sur des photos du X2D II. Un utilisateur de X2D signale qu'il se charge et fonctionne.
+- `HNCS-Hasselblad-X2D-II.dcp` ne change pas.
+
+Merci à [u/ubiquitousuk](https://www.reddit.com/user/ubiquitousuk/) (r/hasselblad), qui a eu l'idée et l'a essayé sur ses fichiers de X2D.
+
+## Installation
+
+Copiez le `.dcp` de votre boîtier dans le dossier **utilisateur** de Camera Raw : `~/Library/Application Support/Adobe/CameraRaw/CameraProfiles/` (macOS) ou `%APPDATA%\Adobe\CameraRaw\CameraProfiles\` (Windows). Relancez Lightroom Classic. Si vous avez les deux boîtiers, les deux fichiers peuvent cohabiter dans le même dossier.
