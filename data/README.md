@@ -1,6 +1,6 @@
 # Data
 
-The measurements the profile was fitted on. With these two files the fitting scripts in [`../tools/`](../tools/) run from this repository, without any raw file of mine. Everything here comes from my own photographs, taken with a Hasselblad X2D II 100C.
+The measurements versions 1.x of the profile were fitted on. With these two files the fitting scripts in [`../tools/`](../tools/) run from this repository, without any raw file of mine. Everything here comes from my own photographs, taken with a Hasselblad X2D II 100C.
 
 | File | Size | Images | Blocks | What it is |
 |---|---|---|---|---|

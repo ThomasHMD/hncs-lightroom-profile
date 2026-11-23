@@ -1,5 +1,7 @@
 # Tools
 
+These scripts fitted and checked versions 1.x of the profile; `adoucir_look.py --self-test` also checks the current release.
+
 The scripts that fitted and checked HNCS. They are written in Python 3 with comments and reports in French (the reports are what the README tables come from). You do **not** need any of this to use the profile: it is for reproducing or improving it, for example for another lens, another body or another Phocus version.
 
 ## What you need
