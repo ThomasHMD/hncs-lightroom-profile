@@ -16,9 +16,29 @@ Un profil caméra Adobe (`.dcp`) gratuit pour Lightroom Classic et Camera Raw qu
 
 28 Ko, pour le X2D II 100C. **X2D 100C de première génération (2022) ?** Prenez plutôt [**HNCS-Hasselblad-X2D-100C.dcp**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Hasselblad-X2D-100C.dcp) : même profil, associé au nom d'appareil du X2D (voir [L'utiliser](#lutiliser)). Toutes les versions sont dans les [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). Les outils qui ont ajusté les versions 1.x sont dans ce dépôt, sous licence MIT (voir [Licence](#licence)).
 
-Facultatif, pour Lightroom Classic sur macOS : [**HNCS-Lightroom-module.zip**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Lightroom-module.zip) (9 Ko), un module qui règle Exposition, Ombres et Hautes lumières photo par photo (voir [Module Lightroom](#module-lightroom-facultatif)).
+Facultatif, pour Lightroom Classic sur macOS : [**HNCS-Lightroom-module.zip**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Lightroom-module.zip) (10 Ko), un module qui règle Exposition, Ombres et Hautes lumières photo par photo (voir [Module Lightroom](#module-lightroom-facultatif)).
 
 ## Nouveautés
+
+### 2.1 : correction d'exposition par objectif (module Lightroom 1.1)
+
+Le profil ne change pas : c'est toujours la 2.0, même nom de fichier. Seul le module Lightroom passe en 1.1.0.
+
+**Pourquoi.** Camera Raw applique le profil d'objectif d'Adobe (distorsion et vignettage) par-dessus le profil caméra, et ce profil d'objectif éclaircit les bords du cadre plus que Phocus ne le fait. Sur les photos où le boîtier n'a pris aucune décision de luminosité (le module les laissait tranquilles), toute l'image sort un peu trop claire. Le module 1.1 règle maintenant **l'Exposition seulement** pour ces photos (pas de décisions du boîtier dans le fichier, ISO sous 6400), selon l'objectif. Ombres et Hautes lumières ne sont pas touchées. L'objectif est lu dans le fichier ; un objectif inconnu (ou un HC) ne change rien. Le module choisit l'une de deux colonnes d'après le réglage *Activer les corrections de profil* de la photo, et s'il ne peut pas le savoir il prend la colonne « coupées ».
+
+| Objectif | Corrections d'objectif actives | Corrections d'objectif coupées |
+|---|---|---|
+| XCD 55V | −0,15 | −0,05 |
+| XCD 38V | −0,20 | −0,05 |
+| XCD 35-100E | −0,05 | −0,03 |
+
+Ces trois valeurs sont mesurées sur mes propres photos. Le module porte aussi de petites valeurs pour cinq autres objectifs (XCD 120, 135, 20-35E, 25V, 90V) que je n'ai pas mesurés moi-même : elles viennent d'un échange de mesures avec un autre photographe de X2D II.
+
+**Ce que ça apporte**, dans Camera Raw contre Phocus, sur les 41 photos tenues hors de l'ajustement, corrections d'objectif **actives** (la façon de travailler de la plupart) : le module 1.1 est plus proche de Phocus que le module 1.0 sur 24 photos, à égalité sur 14 et plus éloigné sur 3 (un écart sous 0,05 compte pour « égal »), et le ΔE2000 médian passe de 2,01 à 1,49. Avec les corrections d'objectif **coupées**, aucun gain n'est prouvé (1,41 à 1,40 ; plus proche sur 17, égal sur 17, plus éloigné sur 7) : la colonne « coupées » n'est qu'une valeur prudente.
+
+**Limites.** Les références sont des exports Phocus 4.1.2. Les valeurs ont été mesurées sur le tiers central du cadre, là où le profil d'objectif pèse le moins : c'est un compromis entre le centre et les bords. L'ouverture joue (le 55V demande environ −0,10 diaphragmé), et une valeur par objectif ne peut pas la suivre. **Le module écrase maintenant le curseur Exposition** de ces photos (Édition ▸ Annuler le remet).
+
+Essayé dans Lightroom Classic sur 8 photos (55V, 38V, 35-100E, ISO 6400 et les trois cas avec décisions du boîtier), corrections d'objectif coupées puis actives : les valeurs sont celles du tableau, et Annuler remet tout.
 
 ### 2.0 : des couleurs plus régulières, bien plus robuste quand on pousse les réglages
 
@@ -83,15 +103,15 @@ HNCS règle aussi la luminosité de chaque photo automatiquement. Le boîtier é
 
 ## Module Lightroom (facultatif)
 
-**Pourquoi un module en plus du profil ?** Le boîtier décide une luminosité pour chaque photo. En RAW + JPEG à ISO 100 ou 200, il remonte souvent l'image en numérique de 1 ou 2 IL, et il décide aussi de combien relever les ombres et retenir les hautes lumières. Ces décisions sont écrites dans le 3FR. Un profil est la même recette pour toutes les photos : il ne peut pas varier d'une photo à l'autre. Le module lit les décisions du boîtier dans chaque fichier et règle Exposition, Ombres et Hautes lumières photo par photo, avec le profil, en une seule opération qu'on peut annuler.
+**Pourquoi un module en plus du profil ?** Le boîtier décide une luminosité pour chaque photo. Quand un JPEG ou un HEIF HDR est enregistré avec le RAW (en général à ISO 100 ou 200), il remonte souvent l'image en numérique de 1 ou 2 IL, et il décide aussi de combien relever les ombres et retenir les hautes lumières. Ces décisions sont écrites dans le 3FR, et seulement dans ce cas : un fichier en RAW seul n'en porte aucune. Un profil est la même recette pour toutes les photos : il ne peut pas varier d'une photo à l'autre. Le module lit les décisions du boîtier dans chaque fichier et règle Exposition, Ombres et Hautes lumières photo par photo, avec le profil, en une seule opération qu'on peut annuler.
 
 **Ce qu'il apporte**, mesuré dans Camera Raw contre Phocus (ΔE2000 médian, photos tenues hors du réglage, profil 2.0) :
 
 | Photos | Sans le module | Avec le module |
 |---|---|---|
-| RAW + JPEG remontés de 1 ou 2 IL (8 photos) | 3,86 | **2,20** |
-| RAW seul, ISO 6400 et plus (14 photos) | 3,11 | **2,22** |
-| Toutes les autres (RAW seul, sous ISO 6400) | 1,18 | laissées telles quelles |
+| Décisions du boîtier présentes, remontée de 1 ou 2 IL (8 photos) | 3,86 | **2,20** |
+| Sans décisions du boîtier, ISO 6400 et plus (14 photos) | 3,11 | **2,22** |
+| Toutes les autres (sans décisions du boîtier, sous ISO 6400) | 1,18 | module 1.0 : laissées telles quelles ; module 1.1 : Exposition réglée selon l'objectif, voir [Nouveautés](#nouveautés) |
 
 Les échantillons sont petits : ces chiffres sont une indication. Ils ont été mesurés dans Camera Raw (Photoshop), pas dans Lightroom lui-même. Le seuil d'ISO 6400 a été fixé sur ces mêmes 14 photos (à ISO 3200, la correction rendait 5 photos sur 6 moins bonnes) : cette ligne n'est donc pas un chiffre hors échantillon, et aucune photo entre ISO 3200 et 6400 n'était disponible.
 
@@ -106,15 +126,15 @@ Les échantillons sont petits : ces chiffres sont une indication. Ils ont été 
 
 | Photo | Profil | Exposition | Ombres | Hautes lumières |
 |---|---|---|---|---|
-| RAW seul (le boîtier n'a rien décidé), ISO inférieur à 6400 | HNCS | inchangée | inchangées | inchangées |
-| RAW seul, ISO 6400 ou plus | HNCS | −0,15 | 0 | 0 |
-| RAW + JPEG, remontée du boîtier d'environ 0 IL | HNCS | +0,05 | +10 | −5 |
-| RAW + JPEG, remontée d'environ 1 IL | HNCS | −0,20 | +5 | −20 |
-| RAW + JPEG, remontée d'environ 2 IL | HNCS | −0,10 | 0 | −50 |
+| Sans décisions du boîtier dans le fichier, ISO inférieur à 6400 | HNCS | selon l'objectif (tableau dans [Nouveautés](#nouveautés) ; inchangée pour un objectif inconnu) | inchangées | inchangées |
+| Sans décisions du boîtier, ISO 6400 ou plus | HNCS | −0,15 | 0 | 0 |
+| Décisions du boîtier présentes, remontée d'environ 0 IL | HNCS | +0,05 | +10 | −5 |
+| Décisions du boîtier présentes, remontée d'environ 1 IL | HNCS | −0,20 | +5 | −20 |
+| Décisions du boîtier présentes, remontée d'environ 2 IL | HNCS | −0,10 | 0 | −50 |
 
 **Annuler** : **Édition ▸ Annuler « Réglages X2D II (HNCS) »** remet le profil et les trois curseurs comme avant, pour toutes les photos d'un coup.
 
-**État du module.** Je l'ai utilisé dans Lightroom Classic sous macOS, sur 3 photos RAW + JPEG remontées de 2 IL : le profil et les curseurs ont été appliqués comme prévu. Pas encore essayés dans Lightroom : les photos en RAW seul et les sélections mixtes (la règle elle-même a été vérifiée hors de Lightroom). **Windows : non testé**, le module s'arrête avec un message plutôt que de deviner. La règle a été fixée sur peu de photos (11 avec décisions du boîtier, tenues à part), et un vieux catalogue à ancienne version de traitement peut ignorer certains curseurs.
+**État du module.** J'ai essayé la version 1.1 dans Lightroom Classic sous macOS, sur 8 photos couvrant les cas ci-dessus (corrections d'objectif actives et coupées), en vérifiant les curseurs contre la règle, photo par photo, et l'annulation. Pas encore essayées dans Lightroom : les sélections mixtes avec des fichiers qui ne sont pas des 3FR (la règle elle-même a été vérifiée hors de Lightroom). **Windows : non testé**, le module s'arrête avec un message plutôt que de deviner. Les règles des photos avec décisions du boîtier ont été fixées sur peu de photos (11 tenues à part), et un vieux catalogue à ancienne version de traitement peut ignorer certains curseurs.
 
 ## Précision
 
@@ -163,7 +183,7 @@ Je l'ai fait avec l'aide de Claude Code (l'assistant de programmation d'Anthropi
 ## Crédits et travaux antérieurs
 
 - [u/ubiquitousuk](https://www.reddit.com/user/ubiquitousuk/) (Reddit, r/hasselblad) a eu l'idée de la variante du X2D de première génération : changer le nom d'appareil du profil en `100-20-Coated6`. Il l'a essayée sur ses propres fichiers de X2D et m'a envoyé le fichier qui fonctionne ; `tools/variante_x2d.py` le reconstruit à partir du profil du X2D II.
-- [Konrad Michels, « What a Lightroom Camera Profile Can and Cannot Reproduce from Phocus »](https://blog.tonalphoto.com/lightroom-camera-profile-phocus-color/) (Tech Behind the Frame) : même approche, un profil caméra Lightroom ajusté sur des rendus Phocus du X2D II. Son profil est maintenant téléchargeable gratuitement lui aussi : [Rockfish X2D II](https://github.com/kmichels/rockfish-x2d-ii) (profil sous CC BY 4.0, outils sous MIT). Nous comparons nos mesures et travaillons ensemble sur les corrections par objectif.
+- [Konrad Michels, « What a Lightroom Camera Profile Can and Cannot Reproduce from Phocus »](https://blog.tonalphoto.com/lightroom-camera-profile-phocus-color/) (Tech Behind the Frame) : même approche, un profil caméra Lightroom ajusté sur des rendus Phocus du X2D II. Son profil est maintenant disponible lui aussi : [Rockfish X2D II](https://blog.tonalphoto.com/rockfish-x2d-ii/) (gratuit avec une inscription au blog, pour un usage personnel). Nous comparons nos mesures et travaillons ensemble sur les corrections par objectif.
 - [dcamprof](https://github.com/Entropy512/dcamprof) (miroir GitHub) d'Anders Torger, utilisé pour recouper mon modèle de rendu et comme première approche. Il est sous GPL-3.0 et n'est pas inclus : mes scripts ne font que l'appeler comme programme externe. J'ai gardé mon propre ajustement, qui mesurait mieux dans Camera Raw.
 - La structure du profil suit la spécification DNG d'Adobe. Les matrices couleur viennent du profil d'Adobe (voir [Licence](#licence)).
 

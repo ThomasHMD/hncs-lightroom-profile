@@ -14,14 +14,17 @@ local regle = require("regle")
 local tags = require("tags")
 local config = require("config")
 
+-- Le boîtier écrit ses décisions de luminosité dans le RAW seulement quand il enregistre en même temps un JPEG ou un HEIF HDR ;
+-- un RAW seul n'en porte pas. Le module détecte ces décisions dans le fichier.
 local LIBELLES = {
-  raw_bas_iso = "RAW seul, ISO < 6400 : profil seulement, curseurs inchangés",
-  raw_iso_haut = "RAW seul, ISO >= 6400 : exposition -0,15",
-  classe0 = "RAW + JPEG, BaselineExposure ~ 0 : +0,05 / +10 / -5",
-  classe1 = "RAW + JPEG, BaselineExposure ~ 1 : -0,20 / +5 / -20",
-  classe2 = "RAW + JPEG, BaselineExposure ~ 2 : -0,10 / 0 / -50",
+  raw_bas_iso = "sans décisions du boîtier, ISO < 6400, objectif sans correction : profil seulement, curseurs inchangés",
+  raw_bas_iso_objectif = "sans décisions du boîtier, ISO < 6400 : exposition corrigée selon l'objectif (Ombres et Hautes lumières inchangées)",
+  raw_iso_haut = "sans décisions du boîtier, ISO >= 6400 : exposition -0,15",
+  classe0 = "avec décisions du boîtier, BaselineExposure ~ 0 : +0,05 / +10 / -5",
+  classe1 = "avec décisions du boîtier, BaselineExposure ~ 1 : -0,20 / +5 / -20",
+  classe2 = "avec décisions du boîtier, BaselineExposure ~ 2 : -0,10 / 0 / -50",
 }
-local ORDRE = { "raw_bas_iso", "raw_iso_haut", "classe0", "classe1", "classe2" }
+local ORDRE = { "raw_bas_iso", "raw_bas_iso_objectif", "raw_iso_haut", "classe0", "classe1", "classe2" }
 
 -- Opérations système pour tags.lua (les chemins temporaires viennent de Lightroom).
 local compteur = 0
@@ -110,10 +113,22 @@ LrTasks.startAsyncTask(function()
     elseif not tags.est_x2d2(brut) then
       n_hors_boitier = n_hors_boitier + 1
     else
-      local t = regle.normaliser(brut)
+      -- copie des tags (le même fichier peut porter plusieurs copies virtuelles aux réglages différents)
+      local b = {}
+      for k, v in pairs(brut) do b[k] = v end
+      -- objectif : LensModel du fichier, sinon le nom que Lightroom donne ; corrections d'objectif : réglage actuel de la photo
+      if b.lens == nil then
+        local okl, nom = LrTasks.pcall(function() return c.photo:getFormattedMetadata("lens") end)
+        if okl and type(nom) == "string" and nom ~= "" then b.lens = nom end
+      end
+      local oks, st = LrTasks.pcall(function() return c.photo:getDevelopSettings() end)
+      if oks and type(st) == "table" then b.lens_actives = st.LensProfileEnable end
+      local t = regle.normaliser(b)
       local e, s, h, _, cas = regle.regle(t, false)
+      local portee = false
+      if cas == "raw_bas_iso" then portee = "profil" elseif cas == "raw_bas_iso_objectif" then portee = "expo" end
       plan[#plan + 1] = { photo = c.photo, chemin = c.chemin, cas = cas,
-        reglages = config.reglages_developpement(e, s, h, cas == "raw_bas_iso") }
+        reglages = config.reglages_developpement(e, s, h, portee) }
     end
   end
 
@@ -160,5 +175,5 @@ LrTasks.startAsyncTask(function()
     l[#l + 1] = "Erreurs (5 premières) :"
     for i = 1, math.min(5, #erreurs) do l[#l + 1] = "  " .. erreurs[i] end
   end
-  LrDialogs.message("Réglages X2D II : résumé", table.concat(l, "\n"), #erreurs > 0 and "warning" or "info")
+  LrDialogs.message("Réglages X2D II  : résumé", table.concat(l, "\n"), #erreurs > 0 and "warning" or "info")
 end)

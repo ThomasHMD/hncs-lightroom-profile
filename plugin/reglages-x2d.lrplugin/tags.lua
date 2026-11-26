@@ -7,7 +7,7 @@
     sys.fichier_temporaire(suffixe) -> chemin   sys.supprimer(chemin)
 
   Tags lus : ISO, IFD0:BaselineExposure, makernotes 0x007a / 0x007b /
-  0x007c (ombres, hautes lumières, autoknee) et Make / Model pour reconnaître le X2D II.
+  0x007c (ombres, hautes lumières, autoknee), LensModel (1.1 : correction par objectif) et Make / Model pour reconnaître le X2D II.
 ]]
 
 local regle = require("regle")
@@ -30,6 +30,7 @@ function M.argfile(chemins)
     table.concat({
       "$Directory/$FileName", "$Make", "$Model", "$ISO", "${IFD0:BaselineExposure}",
       "${MakerUnknown:Unknown_0x007a}", "${MakerUnknown:Unknown_0x007b}", "${MakerUnknown:Unknown_0x007c}",
+      "${ExifIFD:LensModel}",
     }, SEP),
   }
   for _, c in ipairs(chemins) do l[#l + 1] = c end
@@ -42,7 +43,7 @@ local function nombre(s)
 end
 
 --[[
-  Analyse la sortie d'exiftool. Retourne une table chemin -> { fichier, make, model, iso, be, sd, hl, kn } (bruts :
+  Analyse la sortie d'exiftool. Retourne une table chemin -> { fichier, make, model, iso, be, sd, hl, kn, lens } (bruts :
   nil = tag absent). `be` absent -> nil (la normalisation le met à 0.0).
 ]]
 function M.analyser(texte)
@@ -59,12 +60,13 @@ function M.analyser(texte)
       champs[#champs + 1] = ligne:sub(pos, i - 1)
       pos = i + 1
     end
-    if #champs >= 8 then
+    if #champs >= 9 then
       out[champs[1]] = {
         fichier = champs[1],
         make = champs[2], model = champs[3],
         iso = nombre(champs[4]), be = nombre(champs[5]),
         sd = nombre(champs[6]), hl = nombre(champs[7]), kn = nombre(champs[8]),
+        lens = (champs[9] ~= "-" and champs[9] ~= "") and champs[9] or nil,
       }
     end
   end

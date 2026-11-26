@@ -16,9 +16,29 @@ A free Adobe camera profile (`.dcp`) for Lightroom Classic and Camera Raw that r
 
 28 KB, for the X2D II 100C. **First-generation X2D 100C (2022)?** Use [**HNCS-Hasselblad-X2D-100C.dcp**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Hasselblad-X2D-100C.dcp) instead: same profile, keyed to the X2D's own camera name (see [Use it](#use-it)). All versions are in the [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases). The tools that fitted versions 1.x are in this repository, under the MIT license (see [License](#license)).
 
-Optional, for Lightroom Classic on macOS: [**HNCS-Lightroom-module.zip**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Lightroom-module.zip) (9 KB), a module that adjusts Exposure, Shadows and Highlights photo by photo (see [Lightroom module](#lightroom-module-optional)).
+Optional, for Lightroom Classic on macOS: [**HNCS-Lightroom-module.zip**](https://github.com/ThomasHMD/hncs-lightroom-profile/releases/latest/download/HNCS-Lightroom-module.zip) (10 KB), a module that adjusts Exposure, Shadows and Highlights photo by photo (see [Lightroom module](#lightroom-module-optional)).
 
 ## What's new
+
+### 2.1: exposure correction per lens (Lightroom module 1.1)
+
+The profile does not change: it is still 2.0, same file name. Only the Lightroom module goes to 1.1.0.
+
+**Why.** Camera Raw applies Adobe's own lens profile (distortion and vignetting) on top of the camera profile, and that lens profile brightens the edges of the frame more than Phocus does. On photos where the camera made no brightness decision (the module used to leave them alone), the whole picture comes out a little too light. Module 1.1 now sets **Exposure only** for those photos (no camera decisions in the file, ISO below 6400), by lens. Shadows and Highlights are not touched. The lens is read from the file; an unknown lens (or an HC lens) changes nothing. The module picks one of two columns from the photo's *Enable Profile Corrections* setting, and when it cannot tell it uses the "off" column.
+
+| Lens | Lens corrections on | Lens corrections off |
+|---|---|---|
+| XCD 55V | −0.15 | −0.05 |
+| XCD 38V | −0.20 | −0.05 |
+| XCD 35-100E | −0.05 | −0.03 |
+
+These three values are measured on my own photos. The module also carries small values for five other lenses (XCD 120, 135, 20-35E, 25V, 90V) that I have not measured myself: they come from a measurement exchange with another X2D II photographer.
+
+**What it brings**, in Camera Raw against Phocus, on the 41 photos kept out of the fitting, with lens corrections **on** (how most people work): module 1.1 is closer to Phocus than module 1.0 on 24 photos, the same on 14 and farther on 3 (a difference under 0.05 counts as "the same"), and the median ΔE2000 goes from 2.01 to 1.49. With lens corrections **off**, there is no proven gain (1.41 to 1.40; closer on 17, the same on 17, farther on 7), so the "off" column is only a cautious value.
+
+**Limits.** The references are Phocus 4.1.2 exports. The values were measured on the central third of the frame, where the lens profile weighs least, so they are a compromise between center and edges. Aperture matters (the 55V wants about −0.10 stopped down), and one value per lens cannot follow it. **The module now overwrites the Exposure slider** of those photos (Edit ▸ Undo puts it back).
+
+Tried in Lightroom Classic on 8 photos (55V, 38V, 35-100E, ISO 6400, and the three cases with camera decisions), with lens corrections off and then on: the values are those of the table, and Undo puts everything back.
 
 ### 2.0: smoother colors, much more robust when you push the settings
 
@@ -83,15 +103,15 @@ HNCS also sets the brightness of each photo automatically. The camera writes tha
 
 ## Lightroom module (optional)
 
-**Why a module on top of the profile?** The camera decides a brightness for each photo. When it shoots RAW + JPEG at ISO 100 or 200, it often lifts the picture digitally by 1 or 2 stops (EV), and it also decides how much to lift the shadows and pull back the highlights. Those decisions are written in the 3FR. A profile is the same recipe for every photo: it cannot change from one photo to the next. The module reads the camera's decisions in each file and sets Exposure, Shadows and Highlights photo by photo, together with the profile, in a single operation you can undo.
+**Why a module on top of the profile?** The camera decides a brightness for each photo. When a JPEG or an HDR HEIF is recorded along with the RAW (typically at ISO 100 or 200), it often lifts the picture digitally by 1 or 2 stops (EV), and it also decides how much to lift the shadows and pull back the highlights. Those decisions are written in the 3FR, and only in that case: a RAW-only file carries none. A profile is the same recipe for every photo: it cannot change from one photo to the next. The module reads the camera's decisions in each file and sets Exposure, Shadows and Highlights photo by photo, together with the profile, in a single operation you can undo.
 
 **What it brings**, measured in Camera Raw against Phocus (median ΔE2000, photos kept out of the tuning, profile 2.0):
 
 | Photos | Without the module | With the module |
 |---|---|---|
-| RAW + JPEG lifted by 1 or 2 EV (8 photos) | 3.86 | **2.20** |
-| RAW only, ISO 6400 and above (14 photos) | 3.11 | **2.22** |
-| All other photos (RAW only, below ISO 6400) | 1.18 | left as they are |
+| Camera decisions present, lifted by 1 or 2 EV (8 photos) | 3.86 | **2.20** |
+| No camera decisions, ISO 6400 and above (14 photos) | 3.11 | **2.22** |
+| All other photos (no camera decisions, below ISO 6400) | 1.18 | module 1.0: left as they are; module 1.1: Exposure set by lens, see [What's new](#whats-new) |
 
 The samples are small: take these figures as an indication. They were measured in Camera Raw (Photoshop), not in Lightroom itself. The ISO 6400 threshold was set on those same 14 photos (at ISO 3200 the correction made 5 photos out of 6 worse), so that line is not an out-of-sample figure, and no photo between ISO 3200 and 6400 was available.
 
@@ -106,15 +126,15 @@ The samples are small: take these figures as an indication. They were measured i
 
 | Photo | Profile | Exposure | Shadows | Highlights |
 |---|---|---|---|---|
-| RAW only (the camera decided nothing), ISO below 6400 | HNCS | unchanged | unchanged | unchanged |
-| RAW only, ISO 6400 or more | HNCS | −0.15 | 0 | 0 |
-| RAW + JPEG, camera lift about 0 EV | HNCS | +0.05 | +10 | −5 |
-| RAW + JPEG, camera lift about 1 EV | HNCS | −0.20 | +5 | −20 |
-| RAW + JPEG, camera lift about 2 EV | HNCS | −0.10 | 0 | −50 |
+| No camera decisions in the file, ISO below 6400 | HNCS | by lens (table in [What's new](#whats-new); unchanged for an unknown lens) | unchanged | unchanged |
+| No camera decisions, ISO 6400 or more | HNCS | −0.15 | 0 | 0 |
+| Camera decisions present, lift about 0 EV | HNCS | +0.05 | +10 | −5 |
+| Camera decisions present, lift about 1 EV | HNCS | −0.20 | +5 | −20 |
+| Camera decisions present, lift about 2 EV | HNCS | −0.10 | 0 | −50 |
 
 **Undo**: **Edit ▸ Undo "Réglages X2D II (HNCS)"** puts the profile and the three sliders back as they were, for all the photos at once.
 
-**State of the module.** I used it in Lightroom Classic on macOS, on 3 RAW + JPEG photos lifted by 2 EV: the profile and the sliders were applied as expected. Not tried yet in Lightroom: RAW-only photos and mixed selections (the rule itself was checked outside Lightroom). **Windows: not tested**, the module stops with a message instead of guessing. The rule was fixed on a few photos (11 with camera decisions kept aside), and an old catalog with an old process version may ignore some sliders.
+**State of the module.** I tried version 1.1 in Lightroom Classic on macOS, on 8 photos covering the cases above (with lens corrections on and off), and checked the sliders against the rule, photo by photo, and Undo. Not tried yet in Lightroom: mixed selections with non-3FR files (the rule itself was checked outside Lightroom). **Windows: not tested**, the module stops with a message instead of guessing. The rules for photos with camera decisions were fixed on a few photos (11 kept aside), and an old catalog with an old process version may ignore some sliders.
 
 ## Accuracy
 
@@ -163,7 +183,7 @@ I built it with the help of Claude Code (Anthropic's coding assistant), which wr
 ## Credits and prior art
 
 - [u/ubiquitousuk](https://www.reddit.com/user/ubiquitousuk/) (Reddit, r/hasselblad) had the idea of the first-generation X2D variant: changing the profile's camera name to `100-20-Coated6`. They tried it on their own X2D files and sent me the working file; `tools/variante_x2d.py` rebuilds it from the X2D II profile.
-- [Konrad Michels, "What a Lightroom Camera Profile Can and Cannot Reproduce from Phocus"](https://blog.tonalphoto.com/lightroom-camera-profile-phocus-color/) (Tech Behind the Frame): same approach, fitting a Lightroom camera profile to Phocus renders of the X2D II. His profile is now a free download too: [Rockfish X2D II](https://github.com/kmichels/rockfish-x2d-ii) (profile under CC BY 4.0, build tools under MIT). We compare our measurements and are working together on per-lens corrections.
+- [Konrad Michels, "What a Lightroom Camera Profile Can and Cannot Reproduce from Phocus"](https://blog.tonalphoto.com/lightroom-camera-profile-phocus-color/) (Tech Behind the Frame): same approach, fitting a Lightroom camera profile to Phocus renders of the X2D II. His profile is now available too: [Rockfish X2D II](https://blog.tonalphoto.com/rockfish-x2d-ii/) (free with a blog signup, for personal use). We compare our measurements and are working together on per-lens corrections.
 - [dcamprof](https://github.com/Entropy512/dcamprof) (GitHub mirror) by Anders Torger, used to cross-check my rendering model and as a first approach. It is GPL-3.0 and is not included: my scripts only call it as an external program. I kept my own fitting, which measured better in Camera Raw.
 - The profile structure follows Adobe's DNG specification. The colour matrices come from Adobe's own profile (see [License](#license)).
 
