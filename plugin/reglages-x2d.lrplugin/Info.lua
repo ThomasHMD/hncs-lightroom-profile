@@ -14,5 +14,5 @@ return {
     { title = "Réglages du module (chemin d'exiftool)", file = "Reglages.lua" },
   },
 
-  VERSION = { major = 1, minor = 1, revision = 0, build = 1 },   -- 1.1.0 : correction d'Exposition par objectif
+  VERSION = { major = 1, minor = 2, revision = 0, build = 1 },   -- 1.2.0 : photos avec décisions du boîtier, 55V coupé
 }

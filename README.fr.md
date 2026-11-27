@@ -20,6 +20,28 @@ Facultatif, pour Lightroom Classic sur macOS : [**HNCS-Lightroom-module.zip**](h
 
 ## Nouveautés
 
+### 2.2 : des oranges et des rouges plus justes (profil 2.2), meilleure luminosité sur les photos avec décisions du boîtier (module Lightroom 1.2)
+
+Deux changements, qu'on peut prendre séparément : un nouveau fichier de profil, et une nouvelle version du module Lightroom.
+
+**Profil 2.2 : oranges et rouges saturés.** Comparée à Phocus, la version 2.0 rendait les oranges et les rouges vifs un peu ternes et légèrement décalés en teinte. Dans la 2.2, j'ai corrigé seulement le secteur orange-rouge de la table de couleurs 3D (teinte et saturation). La luminosité, les bleus, les ciels, les gris et toutes les autres couleurs sont exactement ceux de la 2.0 ; la courbe de tons, les matrices et la structure du fichier sont les mêmes. Mêmes noms de fichier, même nom de profil **HNCS** : les photos qui l'utilisent passent seules à la 2.2, et les fichiers 2.0 / 2.1 restent téléchargeables dans les [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases) (v2.1.0). La variante `HNCS-Hasselblad-X2D-100C.dcp` a reçu la même table de couleurs, et n'a toujours pas été mesurée sur des fichiers de X2D.
+
+**Ce que ça apporte**, dans Camera Raw contre Phocus 4.2.3 (ΔE2000 médian, un écart sous 0,05 compte pour « égal »). J'ai comparé la 2.2 à la 2.0, toutes deux avec le module 1.2.0, donc seul le profil diffère, sur 45 photos jamais utilisées pour l'ajustement : 37 très orangées et 8 ciels. Corrections d'objectif **actives** : plus proche de Phocus sur 17 photos, égal sur 28, **plus éloigné sur aucune** ; médiane de 0,97 à 0,77. Corrections d'objectif **coupées** : 18 / 27 / 0 ; médiane de 0,80 à 0,69. Sur les seules zones orangées (33 photos) : plus proche sur 31, plus éloigné sur 2, dans les deux réglages. Les zones bleues sortent identiques, et aucun ciel n'est plus éloigné. Sur mes 41 anciennes photos de contrôle, la 2.2 est plus proche que la 2.0 sur 8 (corrections actives) et 9 (coupées), plus éloignée sur aucune. Sur les 45, 33 ont été prises le même jour ou dans la même scène que des photos de l'ajustement ; sur les 12 scènes nouvelles, les zones orangées sont plus proches sur 11 photos et plus éloignées sur aucune.
+
+Les tests de bandes de la 2.0 donnent le même résultat avec la 2.2 : un masque sur un ciel de coucher de soleil et sur un ciel bleu, avec de forts changements de balance des blancs, de teinte et de saturation (pas plus de pixels de dégradé cassés qu'avec la 2.0), et j'ai regardé les images de test à l'œil.
+
+**Comparaison avec Rockfish.** À titre de repère, j'ai rendu les mêmes 45 photos avec [Rockfish X2D II](https://blog.tonalphoto.com/rockfish-x2d-ii/) tel qu'un utilisateur s'en sert (Exposition 0, sans module), contre HNCS 2.2 avec le module 1.2.0. Corrections d'objectif actives : HNCS plus proche de Phocus sur 35 photos, égal sur 1, plus éloigné sur 9. Coupées : 35 / 5 / 5. Sur les seules zones orangées, corrections actives, HNCS est plus proche sur 29 photos et plus éloigné sur 4 ; coupées, plus proche sur 25 et plus éloigné sur 6, et les pires cas (95e centile) sont à égalité (4,21 contre 4,20). Même réserve que partout ici : mes photos, un seul boîtier, Phocus 4.2.3 pour référence.
+
+**Limites.** Seul le secteur orange-rouge a changé, réglé sur 100 de mes photos, dont 8 seulement sous 4 400 K et une seule vraiment chaude. Un rouge très saturé en lumière chaude (environ 3 000 K) sort un peu plus éloigné de Phocus dans ma validation croisée (environ 0,2 de ΔE ; un calcul, pas vu dans les vrais rendus Camera Raw). La table de couleurs est un peu moins lisse dans ce secteur qu'en 2.0 ; je n'ai rien vu dans les tests ci-dessus, et pas encore de bandes sur une vraie photo. Les scripts de `tools/` sont toujours ceux des versions 1.x : les tables 2.x ne sont pas reconstruites par eux.
+
+**Module Lightroom 1.2.**
+
+- **Meilleure luminosité sur les photos où le boîtier a pris des décisions de luminosité** (un JPEG ou un HEIF HDR enregistré avec le RAW). Ces photos sortaient un peu trop claires : le module baisse maintenant un peu plus leur Exposition (la première ligne du tableau passe de +0,05 à −0,05) et, avec les corrections d'objectif **actives**, ajoute une petite correction par objectif (XCD 55V −0,15, 35-100E −0,04, 38V −0,13). Corrections coupées, ou objectif inconnu : rien n'est ajouté. La valeur du 38V est reprise des résultats du 55V et du 35-100E : je n'avais aucune photo de 38V avec décisions du boîtier pour la mesurer.
+- **Le XCD 55V est plus juste avec les corrections d'objectif coupées** : Exposition −0,08 au lieu de −0,05 pour les photos sans décisions du boîtier sous ISO 6400.
+- **Pas de régression contre la 1.1.0**, jugé sur 71 photos de contrôle (30 + 41) rendues dans Camera Raw et comparées à Phocus 4.2.3 : nulle part le module 1.2 n'est plus souvent derrière la 1.1 que devant, et les pires cas (95e centile) ne se dégradent pas. Le gain est sur les photos avec décisions du boîtier (11 sur 11 plus proches de Phocus avec les corrections d'objectif actives, sur les 41) et sur le 55V avec les corrections coupées ; toutes les autres photos sortent exactement comme avec la 1.1.0. Sur les 30, une seule photo avec décisions du boîtier était disponible en corrections actives : cette ligne ne prouve pas grand-chose.
+
+**Mise à jour** : téléchargez de nouveau les deux fichiers `.dcp` (ou celui de votre boîtier), remplacez les anciens dans le même dossier et relancez Lightroom (voir [Installation](#installer)) ; pour le module, téléchargez `HNCS-Lightroom-module.zip`, remplacez le dossier `reglages-x2d.lrplugin` que vous utilisez, et rechargez le module dans Fichier ▸ Gestionnaire de modules externes.
+
 ### 2.1 : correction d'exposition par objectif (module Lightroom 1.1)
 
 Le profil ne change pas : c'est toujours la 2.0, même nom de fichier. Seul le module Lightroom passe en 1.1.0.
@@ -34,7 +56,7 @@ Le profil ne change pas : c'est toujours la 2.0, même nom de fichier. Seul le m
 
 Ces trois valeurs sont mesurées sur mes propres photos. Le module porte aussi de petites valeurs pour cinq autres objectifs (XCD 120, 135, 20-35E, 25V, 90V) que je n'ai pas mesurés moi-même : elles viennent d'un échange de mesures avec un autre photographe de X2D II.
 
-**Ce que ça apporte**, dans Camera Raw contre Phocus, sur les 41 photos tenues hors de l'ajustement, corrections d'objectif **actives** (la façon de travailler de la plupart) : le module 1.1 est plus proche de Phocus que le module 1.0 sur 24 photos, à égalité sur 14 et plus éloigné sur 3 (un écart sous 0,05 compte pour « égal »), et le ΔE2000 médian passe de 2,01 à 1,49. Avec les corrections d'objectif **coupées**, aucun gain n'est prouvé (1,41 à 1,40 ; plus proche sur 17, égal sur 17, plus éloigné sur 7) : la colonne « coupées » n'est qu'une valeur prudente.
+**Ce que ça apporte**, dans Camera Raw contre Phocus, sur les 41 photos tenues hors de l'ajustement, corrections d'objectif **actives** (la façon de travailler de la plupart) : le module 1.1 est plus proche de Phocus que le module 1.0 sur 24 photos, à égalité sur 14 et plus éloigné sur 3 (un écart sous 0,05 compte pour « égal »), et le ΔE2000 médian passe de 2,01 à 1,49. Avec les corrections d'objectif **coupées**, aucun gain n'est prouvé (1,41 à 1,40 ; plus proche sur 17, égal sur 17, plus éloigné sur 7) : la colonne « coupées » n'était qu'une valeur prudente (le module 1.2 l'améliore pour le 55V, voir 2.2 ci-dessus).
 
 **Limites.** Les références sont des exports Phocus 4.1.2. Les valeurs ont été mesurées sur le tiers central du cadre, là où le profil d'objectif pèse le moins : c'est un compromis entre le centre et les bords. L'ouverture joue (le 55V demande environ −0,10 diaphragmé), et une valeur par objectif ne peut pas la suivre. **Le module écrase maintenant le curseur Exposition** de ces photos (Édition ▸ Annuler le remet).
 
@@ -128,13 +150,15 @@ Les échantillons sont petits : ces chiffres sont une indication. Ils ont été 
 |---|---|---|---|---|
 | Sans décisions du boîtier dans le fichier, ISO inférieur à 6400 | HNCS | selon l'objectif (tableau dans [Nouveautés](#nouveautés) ; inchangée pour un objectif inconnu) | inchangées | inchangées |
 | Sans décisions du boîtier, ISO 6400 ou plus | HNCS | −0,15 | 0 | 0 |
-| Décisions du boîtier présentes, remontée d'environ 0 IL | HNCS | +0,05 | +10 | −5 |
+| Décisions du boîtier présentes, remontée d'environ 0 IL | HNCS | −0,05 (depuis la 1.2) | +10 | −5 |
 | Décisions du boîtier présentes, remontée d'environ 1 IL | HNCS | −0,20 | +5 | −20 |
 | Décisions du boîtier présentes, remontée d'environ 2 IL | HNCS | −0,10 | 0 | −50 |
 
+Depuis la 1.2, avec les corrections d'objectif actives, l'Exposition des trois lignes « décisions du boîtier présentes » reçoit un petit ajout par objectif (XCD 55V −0,15, 35-100E −0,04, 38V −0,13 ; rien pour un autre objectif ni avec les corrections coupées). Dans la ligne « Sans décisions du boîtier, ISO inférieur à 6400 », le XCD 55V avec les corrections coupées est à −0,08.
+
 **Annuler** : **Édition ▸ Annuler « Réglages X2D II (HNCS) »** remet le profil et les trois curseurs comme avant, pour toutes les photos d'un coup.
 
-**État du module.** J'ai essayé la version 1.1 dans Lightroom Classic sous macOS, sur 8 photos couvrant les cas ci-dessus (corrections d'objectif actives et coupées), en vérifiant les curseurs contre la règle, photo par photo, et l'annulation. Pas encore essayées dans Lightroom : les sélections mixtes avec des fichiers qui ne sont pas des 3FR (la règle elle-même a été vérifiée hors de Lightroom). **Windows : non testé**, le module s'arrête avec un message plutôt que de deviner. Les règles des photos avec décisions du boîtier ont été fixées sur peu de photos (11 tenues à part), et un vieux catalogue à ancienne version de traitement peut ignorer certains curseurs.
+**État du module.** La version 1.2 a été vérifiée hors de Lightroom (la règle contre une référence Python sur 57 000 cas) et dans Camera Raw (71 photos de contrôle contre Phocus 4.2.3) ; je ne l'ai pas encore essayée dans Lightroom Classic. J'ai essayé la version 1.1 dans Lightroom Classic sous macOS, sur 8 photos couvrant les cas ci-dessus (corrections d'objectif actives et coupées), en vérifiant les curseurs contre la règle, photo par photo, et l'annulation. Pas encore essayées dans Lightroom : les sélections mixtes avec des fichiers qui ne sont pas des 3FR (la règle elle-même a été vérifiée hors de Lightroom). **Windows : non testé**, le module s'arrête avec un message plutôt que de deviner. Les règles des photos avec décisions du boîtier ont été fixées sur peu de photos (11 tenues à part), et un vieux catalogue à ancienne version de traitement peut ignorer certains curseurs.
 
 ## Précision
 
@@ -153,6 +177,7 @@ Le tableau ci-dessus et les figures ont été faits avec la version 1.0 ; la 1.1
 Testé depuis :
 
 - **2.0**, vrais rendus Camera Raw, 34 photos tenues hors de l'ajustement de la 1.2, contre Phocus (ΔE2000 médian avec l'exposition réglée par photo ; la 1.2 entre parenthèses) : toutes 1,03 (1,04) ; couleurs presque neutres 0,77 (0,87) ; couleurs saturées 1,69 (1,80) ; zones claires 1,14 (1,10) ; lumière chaude sous 4500 K 1,31 (1,13). Telle quelle, sans correction d'exposition : 1,35 (1,26). Contre le JPEG du boîtier, 8 photos tenues à part : 2,31 (2,33). Sous un masque de ciel : voir [Nouveautés](#nouveautés).
+- **2.2**, vrais rendus Camera Raw contre Phocus 4.2.3, 45 photos nouvelles (37 très orangées, 8 ciels), profil 2.2 contre 2.0 avec le même module : plus proche sur 17, égal sur 28, plus éloigné sur aucune (corrections d'objectif actives) ; 18 / 27 / 0 (coupées). ΔE2000 médian de 0,97 à 0,77 (actives) et de 0,80 à 0,69 (coupées). Détail et limites dans [Nouveautés](#nouveautés).
 - **1.1 et 1.2** : rendues de nouveau sur 16 des 41 photos. ΔE2000 médian 1,21 tel quel et 1,03 avec l'exposition réglée par photo ; la 1.0 sur les mêmes 16 photos : 1,30 et 1,05.
 - **Tons de peau** : 3 photos avec des personnes (dont 2 tenues hors de l'ajustement), 1 617 zones sur des visages, des cous et des mains. Médiane 1,10 pour HNCS, 2,60 pour Adobe Standard (90e centile 2,81 et 4,71).
 - **Ciels chauds très clairs** : 33 photos de plus avec des couchers de soleil et des hautes lumières vives (dont 6 d'un utilisateur de X2D), exportées de Phocus, plus 16 des photos de test en contrôle. Je m'en suis servi pour essayer de réajuster la partie claire et saturée de la table de couleurs : les photos du réajustement se rapprochaient de Phocus, mais les autres s'en éloignaient (médiane 1,97 avant, 2,13 à 2,31 après). La 1.2 garde donc sa table : un profil fixe ne peut pas faire mieux à cet endroit.
@@ -175,6 +200,8 @@ Les outils écrivent eux-mêmes ces rapports : on peut les régénérer avec ses
 ## Comment il a été fait
 
 J'ai exporté des paires de fichiers : le 3FR, et la même photo depuis Phocus avec ses réglages HNCS par défaut. À partir de 170 photos (128 pour l'ajustement, 42 mises de côté, dont 41 rendables dans Camera Raw ; trois objectifs, ISO 50 à 25600, lumière du jour et lumière chaude), j'ai ajusté les versions 1.x dans la chaîne de rendu d'Adobe elle-même (spécification DNG 1.7) : une courbe de tons, une petite correction de la matrice couleur et une table de couleurs 3D (teinte, saturation, valeur), neutres intacts. Puis je l'ai corrigé en deux tours d'après de **vrais rendus Camera Raw**, parce que mon modèle de la chaîne s'écartait de Camera Raw d'environ 1,6 ΔE, surtout dans les hautes lumières. Une photo sur quatre, choisie par objectif, n'a jamais servi à l'ajustement ; le tableau ci-dessus porte sur celles-là. (12 de ces 41 ont aussi servi à choisir entre les tours de correction, un petit biais ; l'écart entre les deux derniers tours était négligeable.)
+
+La version 2.2 corrige le secteur orange-rouge de la table de couleurs dans le même esprit : 100 autres de mes photos (X2D II, trois objectifs, exports Phocus 4.2.3), de vrais rendus Camera Raw pour vérifier, et chaque jour de prise de vue laissé de côté à tour de rôle pour mesurer ce qui se transporte d'un jour à l'autre.
 
 Les outils des versions 1.x sont dans [`tools/`](tools/) (Python, commentaires en français), avec un [README](tools/README.md) qui dit ce que fait chaque script et ce qu'il demande. Les mesures sur lesquelles les versions 1.x ont été ajustées sont publiées dans [`data/`](data/README.md) (CC BY 4.0) : les scripts d'ajustement tournent donc depuis ce dépôt.
 

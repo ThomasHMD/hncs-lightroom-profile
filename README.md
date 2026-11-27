@@ -20,6 +20,28 @@ Optional, for Lightroom Classic on macOS: [**HNCS-Lightroom-module.zip**](https:
 
 ## What's new
 
+### 2.2: truer oranges and reds (profile 2.2), better brightness on photos with camera decisions (Lightroom module 1.2)
+
+Two changes, both optional to take: a new profile file, and a new version of the Lightroom module.
+
+**Profile 2.2: saturated oranges and reds.** Next to Phocus, version 2.0 rendered vivid oranges and reds a little dull and slightly off in hue. In 2.2 I corrected only the orange-red sector of the 3D color table (hue and saturation). Brightness, blues, skies, grays and every other color are exactly as in 2.0; the tone curve, the matrices and the file structure are the same. Same file names, same profile name **HNCS**: photos already set to it switch to 2.2 by themselves, and the 2.0 / 2.1 files stay downloadable in the [Releases](https://github.com/ThomasHMD/hncs-lightroom-profile/releases) (v2.1.0). The `HNCS-Hasselblad-X2D-100C.dcp` variant got the same color table; as before, it was not measured on files from the first-generation X2D.
+
+**What it brings**, in Camera Raw against Phocus 4.2.3 (median ΔE2000, a difference under 0.05 counts as "the same"). I compared 2.2 with 2.0, both with module 1.2.0, so only the profile differs, on 45 photos that were never used for fitting: 37 with a lot of orange and 8 skies. With lens corrections **on**: closer to Phocus on 17 photos, the same on 28, **farther on none**; median 0.97 to 0.77. With lens corrections **off**: 18 / 27 / 0; median 0.80 to 0.69. On the orange areas alone (33 photos): closer on 31, farther on 2, in both settings. The blue areas come out identical, and no sky is farther. On my 41 older control photos, 2.2 is closer than 2.0 on 8 (lens corrections on) and 9 (off) and farther on none. Of the 45, 33 were shot the same day or in the same scene as photos I fitted on; on the 12 scenes that were new, the orange areas are closer on 11 photos and farther on none.
+
+The banding tests of 2.0 give the same result with 2.2: a mask on a sunset sky and on a blue sky with strong changes of white balance, hue and saturation (no more broken gradient pixels than with 2.0), and I looked at the test images by eye.
+
+**Compared with Rockfish.** For reference, I rendered the same 45 photos with [Rockfish X2D II](https://blog.tonalphoto.com/rockfish-x2d-ii/) as a user would use it (Exposure 0, no module), against HNCS 2.2 with module 1.2.0. Lens corrections on: HNCS closer to Phocus on 35 photos, the same on 1, farther on 9. Off: 35 / 5 / 5. On the orange areas alone, with lens corrections on, HNCS is closer on 29 photos and farther on 4; with them off, closer on 25 and farther on 6, and the worst cases (95th percentile) are level (4.21 against 4.20). Same caveat as everywhere here: my photos, one body, Phocus 4.2.3 as the reference.
+
+**Limits.** Only the orange-red sector changed, tuned on 100 photos of mine, of which only 8 are below 4,400 K and just one is really warm. One very saturated red in warm light (about 3,000 K) came out slightly farther from Phocus in my cross-check (about 0.2 ΔE; a calculation, not seen in the real Camera Raw renders). The color table is a little less smooth in that sector than in 2.0; I saw nothing in the tests above, and no banding yet on a real photo. The scripts in `tools/` are still those of versions 1.x: the 2.x tables are not rebuilt by them.
+
+**Lightroom module 1.2.**
+
+- **Better brightness on photos where the camera made brightness decisions** (a JPEG or an HDR HEIF recorded with the RAW). Those photos came out a little too light: the module now lowers their Exposure a bit more (the first row of the table is −0.05 instead of +0.05), and with lens corrections **on** it adds a small correction per lens (XCD 55V −0.15, 35-100E −0.04, 38V −0.13). With lens corrections off, or an unknown lens, nothing is added. The 38V value is carried over from the 55V and 35-100E results: I had no 38V photo with camera decisions to measure it on.
+- **The XCD 55V is closer to Phocus with lens corrections off**: Exposure −0.08 instead of −0.05 for photos without camera decisions below ISO 6400.
+- **No regression against version 1.1.0**, judged on 71 control photos (30 + 41) rendered in Camera Raw and compared with Phocus 4.2.3: nowhere is the module 1.2 behind 1.1 more often than it is ahead, and the worst cases (95th percentile) do not get worse. The gain is on the photos with camera decisions (11 out of 11 closer to Phocus with lens corrections on, on the 41) and on the 55V with lens corrections off; all other photos come out exactly as with 1.1.0. On the 30, only one photo with camera decisions was available with lens corrections on, so that line proves little.
+
+**Update**: download the two `.dcp` files again (or the one for your camera), replace the old ones in the same folder and restart Lightroom (see [Install](#install)); for the module, download `HNCS-Lightroom-module.zip`, replace the `reglages-x2d.lrplugin` folder you use, and reload the module in File ▸ Plug-in Manager.
+
 ### 2.1: exposure correction per lens (Lightroom module 1.1)
 
 The profile does not change: it is still 2.0, same file name. Only the Lightroom module goes to 1.1.0.
@@ -34,7 +56,7 @@ The profile does not change: it is still 2.0, same file name. Only the Lightroom
 
 These three values are measured on my own photos. The module also carries small values for five other lenses (XCD 120, 135, 20-35E, 25V, 90V) that I have not measured myself: they come from a measurement exchange with another X2D II photographer.
 
-**What it brings**, in Camera Raw against Phocus, on the 41 photos kept out of the fitting, with lens corrections **on** (how most people work): module 1.1 is closer to Phocus than module 1.0 on 24 photos, the same on 14 and farther on 3 (a difference under 0.05 counts as "the same"), and the median ΔE2000 goes from 2.01 to 1.49. With lens corrections **off**, there is no proven gain (1.41 to 1.40; closer on 17, the same on 17, farther on 7), so the "off" column is only a cautious value.
+**What it brings**, in Camera Raw against Phocus, on the 41 photos kept out of the fitting, with lens corrections **on** (how most people work): module 1.1 is closer to Phocus than module 1.0 on 24 photos, the same on 14 and farther on 3 (a difference under 0.05 counts as "the same"), and the median ΔE2000 goes from 2.01 to 1.49. With lens corrections **off**, there is no proven gain (1.41 to 1.40; closer on 17, the same on 17, farther on 7), so the "off" column was only a cautious value (module 1.2 improves it for the 55V, see 2.2 above).
 
 **Limits.** The references are Phocus 4.1.2 exports. The values were measured on the central third of the frame, where the lens profile weighs least, so they are a compromise between center and edges. Aperture matters (the 55V wants about −0.10 stopped down), and one value per lens cannot follow it. **The module now overwrites the Exposure slider** of those photos (Edit ▸ Undo puts it back).
 
@@ -128,13 +150,15 @@ The samples are small: take these figures as an indication. They were measured i
 |---|---|---|---|---|
 | No camera decisions in the file, ISO below 6400 | HNCS | by lens (table in [What's new](#whats-new); unchanged for an unknown lens) | unchanged | unchanged |
 | No camera decisions, ISO 6400 or more | HNCS | −0.15 | 0 | 0 |
-| Camera decisions present, lift about 0 EV | HNCS | +0.05 | +10 | −5 |
+| Camera decisions present, lift about 0 EV | HNCS | −0.05 (since 1.2) | +10 | −5 |
 | Camera decisions present, lift about 1 EV | HNCS | −0.20 | +5 | −20 |
 | Camera decisions present, lift about 2 EV | HNCS | −0.10 | 0 | −50 |
 
+Since 1.2, with lens corrections on, the Exposure of the three "camera decisions present" rows gets a small extra per lens (XCD 55V −0.15, 35-100E −0.04, 38V −0.13; nothing for another lens or with lens corrections off). In the "No camera decisions, ISO below 6400" row, the XCD 55V with lens corrections off is −0.08.
+
 **Undo**: **Edit ▸ Undo "Réglages X2D II (HNCS)"** puts the profile and the three sliders back as they were, for all the photos at once.
 
-**State of the module.** I tried version 1.1 in Lightroom Classic on macOS, on 8 photos covering the cases above (with lens corrections on and off), and checked the sliders against the rule, photo by photo, and Undo. Not tried yet in Lightroom: mixed selections with non-3FR files (the rule itself was checked outside Lightroom). **Windows: not tested**, the module stops with a message instead of guessing. The rules for photos with camera decisions were fixed on a few photos (11 kept aside), and an old catalog with an old process version may ignore some sliders.
+**State of the module.** Version 1.2 was checked outside Lightroom (the rule against a Python reference on 57,000 cases) and in Camera Raw (71 control photos against Phocus 4.2.3); I have not tried it in Lightroom Classic yet. I tried version 1.1 in Lightroom Classic on macOS, on 8 photos covering the cases above (with lens corrections on and off), and checked the sliders against the rule, photo by photo, and Undo. Not tried yet in Lightroom: mixed selections with non-3FR files (the rule itself was checked outside Lightroom). **Windows: not tested**, the module stops with a message instead of guessing. The rules for photos with camera decisions were fixed on a few photos (11 kept aside), and an old catalog with an old process version may ignore some sliders.
 
 ## Accuracy
 
@@ -153,6 +177,7 @@ The table above and the figures were made with version 1.0; 1.1 and 1.2 only dif
 Tested since then:
 
 - **2.0**, real Camera Raw renders, 34 photos kept out of the 1.2 fitting, against Phocus (median ΔE2000 with exposure tuned per photo; 1.2 in brackets): all 1.03 (1.04); near-neutral colors 0.77 (0.87); saturated colors 1.69 (1.80); bright areas 1.14 (1.10); warm light under 4500 K 1.31 (1.13). As is, without exposure correction: 1.35 (1.26). Against the camera's JPEG, 8 photos kept aside: 2.31 (2.33). Under a sky mask: see [What's new](#whats-new).
+- **2.2**, real Camera Raw renders against Phocus 4.2.3, 45 new photos (37 very orange, 8 skies), profile 2.2 against 2.0 with the same module: closer on 17, the same on 28, farther on none (lens corrections on); 18 / 27 / 0 (off). Median ΔE2000 0.97 to 0.77 (on) and 0.80 to 0.69 (off). Details and limits in [What's new](#whats-new).
 - **1.1 and 1.2**: re-rendered on 16 of the 41 photos. Median ΔE2000 1.21 as is and 1.03 with exposure tuned per photo; 1.0 on the same 16 photos: 1.30 and 1.05.
 - **Skin tones**: 3 photos with people (2 of them kept out of the fitting), 1,617 patches on faces, necks and hands. Median 1.10 for HNCS, 2.60 for Adobe Standard (90th percentile 2.81 and 4.71).
 - **Bright warm skies**: 33 more photos with sunsets and bright highlights (6 of them from an X2D user), exported from Phocus, plus 16 of the test photos as a control. I used them to try a refit of the bright, saturated part of the color table: it brought the photos used for the refit closer to Phocus but moved the other photos further away (median 1.97 before, 2.13 to 2.31 after). So 1.2 keeps its table: a fixed profile cannot do better there.
@@ -175,6 +200,8 @@ The tools write these reports themselves, so they can be regenerated with your o
 ## How it was made
 
 I exported pairs of files: the 3FR, and the same photo from Phocus at its default HNCS settings. From 170 photos (128 for fitting, 42 kept aside, of which 41 could be rendered in Camera Raw; three lenses, ISO 50 to 25600, daylight and warm light), I fitted versions 1.x inside Adobe's own rendering chain (DNG specification 1.7): a tone curve, a small correction of the color matrix, and a 3D color table (hue, saturation, value), with neutrals left untouched. Then I corrected it in two rounds from **real Camera Raw renders**, because my model of the chain differed from Camera Raw by about 1.6 ΔE, mostly in highlights. One photo in four, chosen by lens, was never used for fitting; the table above is on those. (12 of these 41 were also used to choose between the correction rounds, a small bias; the difference between the two last rounds was negligible.)
+
+Version 2.2 corrects the orange-red sector of the color table in the same spirit: 100 more photos of mine (X2D II, three lenses, Phocus 4.2.3 exports), real Camera Raw renders to check, and each shooting day left out in turn to measure what carries over from one day to the next.
 
 The tools of versions 1.x are in [`tools/`](tools/) (Python, comments in French), with a [README](tools/README.md) that says what each script does and what it needs. The measurements versions 1.x were fitted on are published in [`data/`](data/README.md) (CC BY 4.0), so the fitting scripts run from this repository.
 

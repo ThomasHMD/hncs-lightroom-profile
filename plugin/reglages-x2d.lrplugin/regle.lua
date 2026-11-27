@@ -6,6 +6,8 @@
   le README du dépôt). 1.1 ajoute une correction d'Exposition par objectif, seulement pour « sans décisions du boîtier,
   ISO < 6400 » (les autres classes ne cumulent pas). Objectif inconnu = 0. Les valeurs sont celles du README ; n'en
   changer aucune sans changer le README.
+  Version 1.2.0 : photos avec décisions du boîtier : classe 0 à -0,05 d'Exposition et, corrections d'objectif actives, un ajout
+  d'Exposition par objectif (AJOUT_ACTIVES_DECISIONS) ; RAW seul, corrections coupées, 55V : -0,08.
 
   Compatible Lua 5.1 (celui de Lightroom Classic) : pas de `//`, pas de `goto`, pas d'opérateurs de bits.
 ]]
@@ -22,7 +24,7 @@ M.EXPO_ISO_HAUT = -0.15
 -- COUPEES : corrections coupées. Choisi d'après le réglage de la photo (LensProfileEnable) ; inconnu = coupées.
 M.EXPO_OBJECTIF_ACTIVES = { ["55V"] = -0.15, ["38V"] = -0.20, ["35-100E"] = -0.05, ["120"] = -0.10, ["135"] = -0.09,
   ["20-35E"] = -0.08, ["25V"] = -0.05, ["90V"] = 0.0 }
-M.EXPO_OBJECTIF_COUPEES = { ["55V"] = -0.05, ["38V"] = -0.05, ["35-100E"] = -0.03, ["120"] = -0.10, ["135"] = -0.09,
+M.EXPO_OBJECTIF_COUPEES = { ["55V"] = -0.08, ["38V"] = -0.05, ["35-100E"] = -0.03, ["120"] = -0.10, ["135"] = -0.09,
   ["20-35E"] = -0.08, ["25V"] = -0.05, ["90V"] = 0.0 }
 M.OBJECTIFS = { ["55V"] = true, ["38V"] = true, ["35-100E"] = true, ["120"] = true, ["135"] = true,
   ["20-35E"] = true, ["25V"] = true, ["90V"] = true }
@@ -53,10 +55,14 @@ end
 
 -- BaselineExposure arrondie (0, 1, 2) -> { exposition en IL, ombres, hautes lumières }
 M.REGLE_TAGUEE = {
-  [0] = { 0.05, 10, -5 },
+  [0] = { -0.05, 10, -5 },
   [1] = { -0.20, 5, -20 },
   [2] = { -0.10, 0, -50 },
 }
+
+-- 1.2 : photos avec décisions du boîtier, corrections d'objectif ACTIVES : ajout à l'Exposition de la classe, par objectif.
+-- Absent = 0 (objectif inconnu, ou corrections coupées : pas d'ajout).
+M.AJOUT_ACTIVES_DECISIONS = { ["55V"] = -0.15, ["35-100E"] = -0.04, ["38V"] = -0.13 }
 
 -- Arrondi « au pair le plus proche » comme un arrondi bancaire (0.5 -> 0, 1.5 -> 2, 2.5 -> 2).
 local function arrondi_pair(x)
@@ -126,9 +132,17 @@ function M.regle(t, expo_seule)
   if be > 2 then be = 2 end
   local c = M.REGLE_TAGUEE[be]
   local e, s, h = c[1], c[2], c[3]
+  local motif = string.format("tags présents, BaselineExposure %+.2f -> classe %d", t.be, be)
+  if t.lens_actives == true then
+    local k = M.objectif_court(t.lens)
+    local a = k and M.AJOUT_ACTIVES_DECISIONS[k]
+    if a then
+      e = e + a
+      motif = motif .. string.format(", objectif %s, corrections d'objectif actives : %+.2f", k, a)
+    end
+  end
   if expo_seule then s, h = 0, 0 end
-  return e, s, h,
-    string.format("tags présents, BaselineExposure %+.2f -> classe %d", t.be, be), "classe" .. string.format("%d", be)
+  return e, s, h, motif, "classe" .. string.format("%d", be)
 end
 
 return M
